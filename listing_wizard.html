@@ -335,7 +335,7 @@
         }
     </style>
 </head>
-<body class="bg-yellow-50 text-gray-900"> 
+<body> 
 
     <div class="min-h-screen flex items-center justify-center px-4 py-12">
         <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 md:p-8" id="stepContainer">
@@ -444,6 +444,10 @@ Easy to clean</textarea>
                                     <option value="decor">Home Decor</option>
                                     <option value="furniture">Furniture</option>
                                 </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="hsn-code" class="form-label">HSN Code <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Harmonized System of Nomenclature code is required for GST purposes. It is a unique 8-digit code for your product.')">?</button></label>
+                                <input type="text" id="hsn-code" class="form-input mandatory-field-step2" placeholder="e.g., 44190020">
                             </div>
                         </div>
 
@@ -708,6 +712,10 @@ Easy to clean</textarea>
                             <span id="review-category" class="review-value"></span>
                         </div>
                         <div class="review-item">
+                            <span class="review-label">HSN Code:</span>
+                            <span id="review-hsn-code" class="review-value"></span>
+                        </div>
+                        <div class="review-item">
                             <span class="review-label">Material:</span>
                             <span id="review-material" class="review-value"></span>
                         </div>
@@ -813,7 +821,7 @@ Easy to clean</textarea>
         const productData = {
             images: new Array(4).fill(null), // For Step 1
             title: '', description: '', features: '', keywords: '', // For Step 2
-            category: '', material: '', color: '', customColor: '', size: '', // For Step 2
+            category: '', hsnCode: '', material: '', color: '', customColor: '', size: '', // For Step 2 (HSN added)
             mrp: '', sellingPrice: '', enableGroupBuy: false, groupPrice: '', groupMoq: '', // For Step 3
             enableWholesale: false, wholesalePrice: '', wholesaleMoq: '', stock: '', returnPolicy: '', // For Step 3
             weight: '', length: '', width: '', height: '', dimensionsUnit: 'cm', shippingRegion: '', deliveryTime: '' // For Step 4
@@ -919,7 +927,7 @@ Easy to clean</textarea>
                 
                 if (productData.images[i]) {
                     const img = document.createElement('img');
-                    img.src = URL.createObjectURL(productData.images[i]);
+                    img.src = URL.createObjectURL(productData.images[i]); // Corrected: Using productData.images
                     img.alt = `Product Image ${i + 1}`; 
                     slot.appendChild(img);
                     const removeBtn = document.createElement('button');
@@ -1020,6 +1028,7 @@ Easy to clean</textarea>
         const colorSelect = document.getElementById('color-select');
         const customColorInput = document.getElementById('custom-color-input');
         const sizeSelect = document.getElementById('size');
+        const hsnCodeInput = document.getElementById('hsn-code'); // Get HSN Code input
 
         const mandatoryFieldsStep2 = document.querySelectorAll('.mandatory-field-step2');
         const step2NextBtn = document.getElementById('step2-next-btn');
@@ -1039,6 +1048,8 @@ Easy to clean</textarea>
             
             const categorySelect = document.getElementById('category');
             categorySelect.value = productData.category || ""; 
+
+            hsnCodeInput.value = productData.hsnCode || ""; // Populate HSN Code
 
             document.getElementById('material').value = productData.material || "Sheesham Wood";
             
@@ -1079,6 +1090,7 @@ Easy to clean</textarea>
             field.addEventListener('input', validateStep2);
             field.addEventListener('change', validateStep2); 
         });
+        hsnCodeInput.addEventListener('input', validateStep2); // Add HSN Code to validation
 
         colorSelect.addEventListener('change', () => {
             if (colorSelect.value === 'custom') {
@@ -1100,6 +1112,7 @@ Easy to clean</textarea>
             productData.features = document.getElementById('features').value;
             productData.keywords = document.getElementById('keywords').value;
             productData.category = document.getElementById('category').value;
+            productData.hsnCode = hsnCodeInput.value; // Save HSN Code
             productData.material = document.getElementById('material').value;
             
             if (colorSelect.value === 'custom') {
@@ -1444,6 +1457,8 @@ Easy to clean</textarea>
 
             document.getElementById('review-keywords').textContent = productData.keywords || 'N/A';
             document.getElementById('review-category').textContent = productData.category || 'N/A';
+            // NEW: HSN Code for Review
+            document.getElementById('review-hsn-code').textContent = productData.hsnCode || 'N/A';
             document.getElementById('review-material').textContent = productData.material || 'N/A';
             
             let colorText = productData.color;
@@ -1496,10 +1511,18 @@ Easy to clean</textarea>
             document.getElementById('review-delivery-time').textContent = productData.deliveryTime ? `${productData.deliveryTime} days` : 'N/A';
         }
 
-        step5BackBtn.addEventListener('click', () => showStep(4));
+        step5BackBtn.addEventListener('click', () => {
+            showStep(4);
+            // Optionally, release URLs for images if you want to save memory on back navigation
+            // productData.images.forEach(imgFile => {
+            //    if (imgFile) URL.revokeObjectURL(imgFile.src);
+            // });
+        });
         step5SubmitBtn.addEventListener('click', () => {
             alert("Congratulations! Your product listing has been submitted.");
             console.log("Final Product Data:", productData);
+            // After successful submission, redirect to dashboard.html
+            window.location.href = 'success.html'; // Redirect to success page
         });
 
         // --- Initial Load ---

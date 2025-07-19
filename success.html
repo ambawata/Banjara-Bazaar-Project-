@@ -3,32 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listing Successful!</title>
+    <title>Listing Successful! - Banjara Bazaar</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .main-btn { background-color: #FACC15; color: #1F2937; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none; cursor: pointer; transition: background-color 0.2s ease; }
-        .main-btn:hover { background-color: #FBBF24; }
-        .secondary-btn { background-color: #F3F4F6; color: #374151; font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: 1px solid #D1D5DB; cursor: pointer; transition: background-color 0.2s ease; }
-        .secondary-btn:hover { background-color: #E5E7EB; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .success-card {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+        .success-icon {
+            font-size: 4rem;
+            color: #10B981; /* Green checkmark */
+            margin-bottom: 1.5rem;
+        }
+        .success-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 0.75rem;
+        }
+        .success-message {
+            color: #4B5563;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+        .dashboard-btn {
+            background-color: #FACC15; /* Yellow primary button */
+            color: #1F2937;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.2s ease;
+        }
+        .dashboard-btn:hover {
+            background-color: #EAB308;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex items-center justify-center text-center px-4">
-        <div class="bg-white p-8 sm:p-12 rounded-2xl shadow-lg max-w-md">
-            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100">
-                <svg class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-            </div>
-            <h2 class="mt-5 text-2xl sm:text-3xl font-bold text-gray-900">Listing Successful!</h2>
-            <p class="mt-2 text-gray-600">Congratulations, your product is now live on Banjara Bazaar.</p>
-            <div class="mt-8 space-y-4">
-                <a href="listing_wizard.html" class="main-btn block w-full text-center">+ List Another Product</a>
-                <a href="dashboard.html" class="secondary-btn block w-full text-center">View All Products</a>
-            </div>
-        </div>
+<body>
+    <div class="success-card">
+        <div class="success-icon">✔</div>
+        <h1 class="success-title">Product Listed Successfully!</h1>
+        <p class="success-message">Congratulations, your product has been successfully listed on Banjara Bazaar. It will now be reviewed by our team.</p>
+        <a href="dashboard.html" class="dashboard-btn">Go to Dashboard</a>
     </div>
 </body>
 </html>

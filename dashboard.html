@@ -3,24 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard</title>
+    <title>Seller Dashboard - Banjara Bazaar</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+            color: #333;
+            margin: 0; /* Remove default body margin */
+            min-height: 100vh; /* Ensure body takes full viewport height */
+            display: flex; /* Make body a flex container to push footer down if added later */
+            flex-direction: column;
+        }
+        .header {
+            background-color: #ffffff;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            padding: 1rem 1.5rem;
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #92400E; /* Deep orange/brown, similar to original Banjara Bazaar logo */
+            font-family: 'Playfair Display', serif;
+            text-decoration: none;
+        }
+        .main-layout-container { /* New container for sidebar + main content */
+            display: flex;
+            flex-grow: 1; /* Allow it to grow and fill available space */
+        }
+        .sidebar {
+            width: 240px; /* Fixed width for the sidebar */
+            background-color: #ffffff;
+            box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.05); /* Shadow on the right side */
+            padding-top: 1rem;
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
+        }
+        .sidebar-nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            color: #4B5563; /* Gray-600 for inactive items */
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border-left: 4px solid transparent; /* For active state border */
+        }
+        .sidebar-nav-item:hover {
+            background-color: #F3F4F6; /* Light gray on hover */
+            color: #1F2937; /* Darker text on hover */
+        }
+        .sidebar-nav-item.active {
+            background-color: #FFFBEB; /* Light yellow background */
+            color: #D97706; /* Darker orange for active text */
+            font-weight: 700;
+            border-left-color: #FACC15; /* Yellow border for active item */
+        }
+        .sidebar-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .main-content {
+            flex-grow: 1; /* Allow main content to take remaining space */
+            padding: 2rem 1.5rem;
+            max-width: calc(100% - 240px); /* Adjust max-width for sidebar */
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) { /* Adjust for larger screens with 3 columns */
+            .dashboard-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        .card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+        .product-status-dot {
+            height: 0.75rem;
+            width: 0.75rem;
+            border-radius: 9999px;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .status-active { background-color: #10B981; /* Green */ }
+        .status-paused { background-color: #F59E0B; /* Amber */ }
+        .status-draft { background-color: #9CA3AF; /* Gray */ }
+
+        /* Button Styles to match Screenshot */
+        .main-btn {
+            background-color: #FACC15; /* Yellow/Orange from screenshot */
+            color: #1F2937; /* Dark text for contrast on yellow button */
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid #FACC15;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+        .main-btn:hover {
+            background-color: #EAB308;
+            border-color: #EAB308;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .main-btn:disabled {
+            background-color: #D1D5DB;
+            border-color: #D1D5DB;
+            color: #9CA3AF;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .secondary-btn {
+            background-color: #E5E7EB; /* Light gray from screenshot */
+            color: #374151; /* Darker text */
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid #D1D5DB;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            white-space: nowrap;
+        }
+        .secondary-btn:hover {
+            background-color: #D1D5DB;
+            border-color: #9CA3AF;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div class="p-8">
-        <h1 class="text-3xl font-bold text-gray-800">Welcome to Your Dashboard</h1>
-        <p class="text-gray-600 mt-2">This is your control center. Here are some quick actions:</p>
-        
-        <div class="mt-6">
-            <a href="listingwizard.html" 
-               class="inline-block bg-yellow-500 hover:bg-yellow-600 text-black font-bold py-3 px-6 rounded-lg">
-                + Add New Product
-            </a>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="#" class="logo">Banjara Bazaar</a>
+            <span class="font-semibold text-gray-700">Seller Dashboard</span>
         </div>
+    </header>
+
+    <div class="main-layout-container">
+        <aside class="sidebar">
+            <nav>
+                <a href="#" class="sidebar-nav-item active">
+                    <span class="sidebar-icon">🏠</span> Dashboard
+                </a>
+                <a href="#" class="sidebar-nav-item">
+                    <span class="sidebar-icon">📦</span> Products
+                </a>
+                <a href="#" class="sidebar-nav-item">
+                    <span class="sidebar-icon">⬆️</span> Bulk Upload
+                </a>
+                <a href="#" class="sidebar-nav-item">
+                    <span class="sidebar-icon">📋</span> Orders
+                </a>
+                <a href="#" class="sidebar-nav-item">
+                    <span class="sidebar-icon">💳</span> Payments
+                </a>
+                <a href="#" class="sidebar-nav-item">
+                    <span class="sidebar-icon">📈</span> Performance
+                </a>
+                <a href="#" class="sidebar-nav-item">
+                    <span class="sidebar-icon">✉️</span> Messages
+                </a>
+                <a href="#" class="sidebar-nav-item">
+                    <span class="sidebar-icon">⚙️</span> Settings
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <h2 class="text-xl font-bold mb-6">Welcome, Manu!</h2>
+
+            <div class="dashboard-grid mb-8">
+                <a href="./listingwizard.html" class="card flex items-center p-6 bg-yellow-100 hover:bg-yellow-200 transition-colors">
+                    <span class="text-4xl mr-4">🚀</span>
+                    <div>
+                        <h3 class="font-bold text-lg">List a New Product</h3>
+                        <p class="text-sm text-gray-600">Use our 5-step wizard to add products easily.</p>
+                    </div>
+                </a>
+                <a href="#" class="card flex items-center p-6 hover:bg-gray-50 transition-colors">
+                    <span class="text-4xl mr-4">📊</span>
+                    <div>
+                        <h3 class="font-bold text-lg">View Analytics</h3>
+                        <p class="text-sm text-gray-600">Track your sales and performance.</p>
+                    </div>
+                </a>
+                <a href="#" class="card flex items-center p-6 hover:bg-gray-50 transition-colors">
+                    <span class="text-4xl mr-4">👤</span>
+                    <div>
+                        <h3 class="font-bold text-lg">Manage Profile</h3>
+                        <p class="text-sm text-gray-600">Update your account details.</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="card mt-8">
+                <h3 class="text-lg font-bold mb-4">My Products</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full" src="http://googleusercontent.com/file_content/27" alt="Product Image">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Handcrafted Wooden Tray</div>
+                                            <div class="text-sm text-gray-500">Decor</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹1,500</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">200</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="product-status-dot status-active"></span>
+                                    <span class="text-sm text-gray-900">Active</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="main-btn mr-2">Edit</a>
+                                    <a href="#" class="secondary-btn">Pause</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full" src="https://placehold.co/40x40/4CAF50/FFF?text=P2" alt="Product Image">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Ceramic Vase - Blue Motif</div>
+                                            <div class="text-sm text-gray-500">Home Decor</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹800</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">50</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="product-status-dot status-paused"></span>
+                                    <span class="text-sm text-gray-900">Paused</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="main-btn mr-2">Edit</a>
+                                    <a href="#" class="main-btn">Resume</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full" src="https://placehold.co/40x40/9E9E9E/FFF?text=P3" alt="Product Image">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Handloom Rug - Small</div>
+                                            <div class="text-sm text-gray-500">Furnishing</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹2,500</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="product-status-dot status-draft"></span>
+                                    <span class="text-sm text-gray-900">Draft</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="#" class="main-btn mr-2">Edit</a>
+                                    <a href="#" class="secondary-btn">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 </html>
