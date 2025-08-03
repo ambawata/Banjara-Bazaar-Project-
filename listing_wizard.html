@@ -53,11 +53,11 @@
                 <div class="wizard-container">
                     <div id="wizard-steps-wrapper">
                         <div class="wizard-progress-bar">
-                            <div id="wp-step-1" class="wizard-progress-step"><div class="wizard-progress-dot">1</div><div class="wizard-progress-label">Images</div></div>
-                            <div id="wp-step-2" class="wizard-progress-step"><div class="wizard-progress-dot">2<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">AI Polish</div></div>
-                            <div id="wp-step-3" class="wizard-progress-step"><div class="wizard-progress-dot">3<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">Details</div></div>
-                            <div id="wp-step-4" class="wizard-progress-step"><div class="wizard-progress-dot">4<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">Pricing</div></div>
-                            <div id="wp-step-5" class="wizard-progress-step"><div class="wizard-progress-dot">5<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">Review</div></div>
+                            <div id="wp-step-1" class="wizard-progress-step"><div class="wizard-progress-dot">1</div><p class="wizard-progress-label">Images</p></div>
+                            <div id="wp-step-2" class="wizard-progress-step"><div class="wizard-progress-dot">2<div class="wizard-progress-line"></div></div><p class="wizard-progress-label">AI Polish</p></div>
+                            <div id="wp-step-3" class="wizard-progress-step"><div class="wizard-progress-dot">3<div class="wizard-progress-line"></div></div><p class="wizard-progress-label">Details</p></div>
+                            <div id="wp-step-4" class="wizard-progress-step"><div class="wizard-progress-dot">4<div class="wizard-progress-line"></div></div><p class="wizard-progress-label">Pricing</p></div>
+                            <div id="wp-step-5" class="wizard-progress-step"><div class="wizard-progress-dot">5<div class="wizard-progress-line"></div></div><p class="wizard-progress-label">Review</p></div>
                         </div>
 
                         <div id="wizard-step-1-content">
@@ -82,27 +82,30 @@
                              <h2 class="text-3xl font-bold text-center mb-2">Product Details</h2><p class="text-center text-gray-600 mb-8">Review the AI-generated details and add specifics.</p>
                              <form id="detailsForm" class="space-y-4">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div><label class="font-medium" for="title">Product Title</label><input type="text" id="title" required class="form-input mt-1"></div>
-                                    <div><label class="font-medium" for="category">Category</label><select id="category" required class="form-input mt-1 bg-white"><option value="">Select Category</option><option>Home Decor</option><option>Furniture</option><option>Kitchenware</option></select></div>
+                                    <div><label class="font-medium" for="title">Product Title <span class="text-red-500">*</span></label><input type="text" id="title" required class="form-input mt-1"></div>
+                                    <div><label class="font-medium" for="category">Category <span class="text-red-500">*</span></label><select id="category" required class="form-input mt-1 bg-white"><option value="">Select Category</option><option>Home Decor</option><option>Furniture</option><option>Kitchenware</option></select></div>
                                 </div>
-                                <div>
-                                    <label class="font-medium" for="features">Key Features (1 per line)</label>
-                                    <div class="voice-input-container mt-1">
-                                        <textarea id="features" rows="3" required class="form-input" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
-                                        <div class="voice-input-icon" onclick="alert('Voice-to-Text feature will be activated here!')">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="font-medium" for="description">Product Description <span class="text-red-500">*</span></label><textarea id="description" rows="3" required class="form-input mt-1" placeholder="Describe the product in detail..."></textarea></div>
+                                    <div>
+                                        <label class="font-medium" for="features">Key Features (1 per line) <span class="text-red-500">*</span></label>
+                                        <div class="voice-input-container mt-1">
+                                            <textarea id="features" rows="3" required class="form-input" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+                                            <div class="voice-input-icon" onclick="alert('Voice-to-Text feature will be activated here!')">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div><label class="font-medium" for="size-variants">Size Variants? (comma-separated)</label><input type="text" id="size-variants" class="form-input mt-1" placeholder="e.g., Small, Medium, Large"></div>
-                                    <div><label class="font-medium" for="keywords">Search Keywords (comma-separated)</label><input type="text" id="keywords" required class="form-input mt-1" placeholder="e.g., wooden tray, serving platter"></div>
+                                    <div><label class="font-medium" for="keywords">Search Keywords (comma-separated) <span class="text-red-500">*</span></label><input type="text" id="keywords" required class="form-input mt-1" placeholder="e.g., wooden tray, serving platter"></div>
                                 </div>
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div><label class="font-medium" for="material">Material</label><input type="text" id="material" required class="form-input mt-1" placeholder="e.g., Mango Wood"></div>
-                                    <div><label class="font-medium" for="color">Color Variant</label><input type="text" id="color" required class="form-input mt-1" placeholder="e.g., Natural Brown"></div>
+                                    <div><label class="font-medium" for="material">Material <span class="text-red-500">*</span></label><input type="text" id="material" required class="form-input mt-1" placeholder="e.g., Mango Wood"></div>
+                                    <div><label class="font-medium" for="color">Color Variant <span class="text-red-500">*</span></label><input type="text" id="color" required class="form-input mt-1" placeholder="e.g., Natural Brown"></div>
                                     <div>
-                                        <label class="font-medium flex items-center" for="hsn-code">HSN Code 
+                                        <label class="font-medium flex items-center" for="hsn-code">HSN Code <span class="text-red-500">*</span>
                                             <div class="tooltip ml-2">
                                                 <span class="bg-gray-200 text-gray-600 rounded-full h-4 w-4 flex items-center justify-center text-xs font-bold">?</span>
                                                 <span class="tooltiptext">HSN code is a 6-digit code for classifying goods for GST purposes. If unsure, search online for your product category.</span>
@@ -119,15 +122,15 @@
                              <h2 class="text-3xl font-bold text-center mb-2">Pricing & Policies</h2><p class="text-center text-gray-600 mb-8">Set your price, stock, and policies.</p>
                              <form id="pricingForm" class="space-y-6">
                                 <div class="border p-4 rounded-lg bg-yellow-50">
-                                    <h3 class="font-semibold text-lg mb-4">Individual Pricing *</h3>
+                                    <h3 class="font-semibold text-lg mb-4">Individual Pricing <span class="text-red-500">*</span></h3>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                                        <div><label class="font-medium" for="mrp">MRP (₹)</label><input type="number" id="mrp" required class="form-input mt-1" placeholder="e.g., 2999"></div>
-                                        <div><label class="font-medium" for="sellingPrice">Your Selling Price (₹)</label><input type="number" id="sellingPrice" required class="form-input mt-1" placeholder="e.g., 1499"></div>
+                                        <div><label class="font-medium" for="mrp">MRP (₹) <span class="text-red-500">*</span></label><input type="number" id="mrp" required class="form-input mt-1" placeholder="e.g., 2999"></div>
+                                        <div><label class="font-medium" for="sellingPrice">Your Selling Price (₹) <span class="text-red-500">*</span></label><input type="number" id="sellingPrice" required class="form-input mt-1" placeholder="e.g., 1499"></div>
                                     </div>
                                     <div class="mrp-example mt-2" id="mrp-example-text"></div>
                                     <div class="ai-suggestion-box">
                                         <span class="text-2xl mr-3">💡</span>
-                                        <div><p class="font-semibold text-green-800">AI Price Suggestion</p><p class="text-sm text-green-700">To be competitive, we suggest a price around **₹1499**.</p></div>
+                                        <div><p class="font-semibold text-green-800">AI Price Suggestion</p><p class="text-sm text-green-700" id="ai-price-suggestion-text">To be competitive, we suggest a price around **₹1499**.</p></div>
                                     </div>
                                 </div>
                                 <details id="group-buy-details" class="space-y-4">
@@ -151,32 +154,50 @@
                                     </div>
                                 </details>
                                 <details id="inventory-details" class="space-y-4" open>
-                                    <summary>Inventory & Policies *<span class="arrow">▼</span></summary>
+                                    <summary>Inventory & Policies <span class="text-red-500">*</span></summary>
                                     <div class="details-content space-y-4">
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div><label class="font-medium" for="product-weight">Product Weight (in KG) <span class="text-red-500">*</span></label><input type="number" id="product-weight" required class="form-input mt-1" placeholder="e.g., 1.6"></div>
-                                            <div><label class="font-medium" for="package-weight">Package Weight (in KG)</label><input type="number" id="package-weight" class="form-input mt-1" placeholder="Optional, e.g., 1.8"></div>
+                                            <div><label class="font-medium" for="product-weight">Product Weight (in KG) <span class="text-red-500">*</span></label><input type="text" id="product-weight" required class="form-input mt-1" placeholder="e.g., 1.6"></div>
+                                            <div><label class="font-medium" for="package-weight">Package Weight (in KG) <span class="text-red-500">*</span></label><input type="text" id="package-weight" required class="form-input mt-1" placeholder="e.g., 1.8"></div>
                                         </div>
-                                        <div>
-                                            <label class="font-medium flex items-center" for="package-dimensions-length">Package Dimensions <span class="text-red-500">*</span>
-                                                <div class="tooltip ml-2">
-                                                    <span class="bg-gray-200 text-gray-600 rounded-full h-4 w-4 flex items-center justify-center text-xs font-bold">?</span>
-                                                    <span class="tooltiptext">Provide the dimensions of the package. This is used to calculate shipping costs.</span>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="font-medium flex items-center" for="package-dimensions-length">Package Dimensions <span class="text-red-500">*</span>
+                                                    <div class="tooltip ml-2">
+                                                        <span class="bg-gray-200 text-gray-600 rounded-full h-4 w-4 flex items-center justify-center text-xs font-bold">?</span>
+                                                        <span class="tooltiptext">Provide the dimensions of the package. This is used to calculate shipping costs.</span>
+                                                    </div>
+                                                </label>
+                                                <div class="mt-1 grid grid-cols-3 gap-4">
+                                                    <input type="text" id="package-dimensions-length" required class="form-input" placeholder="Length (L)">
+                                                    <input type="text" id="package-dimensions-breadth" required class="form-input" placeholder="Breadth (B)">
+                                                    <input type="text" id="package-dimensions-height" required class="form-input" placeholder="Height (H)">
                                                 </div>
-                                            </label>
-                                            <div class="mt-1 grid grid-cols-3 gap-4">
-                                                <input type="number" id="package-dimensions-length" required class="form-input" placeholder="Length (L)">
-                                                <input type="number" id="package-dimensions-breadth" required class="form-input" placeholder="Breadth (B)">
-                                                <input type="number" id="package-dimensions-height" required class="form-input" placeholder="Height (H)">
+                                                <div class="mt-1 flex justify-end">
+                                                    <select id="package-dimensions-unit" class="form-input w-20 bg-white">
+                                                        <option>cm</option>
+                                                        <option>inch</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div class="mt-1 flex justify-end">
-                                                <select id="package-dimensions-unit" class="form-input w-20 bg-white"><option>cm</option></select>
+                                            <div>
+                                                <label class="font-medium" for="package-items">Package Items <span class="text-red-500">*</span></label>
+                                                <select id="package-items" required class="form-input mt-1 bg-white">
+                                                    <option value="" disabled selected>Select an option</option>
+                                                    <option value="Single Piece">Single Piece</option>
+                                                    <option value="Set of 1">Set of 1</option>
+                                                    <option value="Set of 2">Set of 2</option>
+                                                    <option value="Set of 3">Set of 3</option>
+                                                    <option value="Set of 4">Set of 4</option>
+                                                    <option value="Set of 5">Set of 5</option>
+                                                    <option value="Whole Set">Whole Set</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div><label class="font-medium" for="stock">Total Stock Quantity *</label><input type="number" id="stock" required class="form-input mt-1" placeholder="e.g., 100"></div>
+                                            <div><label class="font-medium" for="stock">Total Stock Quantity <span class="text-red-500">*</span></label><input type="number" id="stock" required class="form-input mt-1" placeholder="e.g., 100"></div>
                                             <div>
-                                                <label class="font-medium" for="return-policy">Return Policy *</label>
+                                                <label class="font-medium" for="return-policy">Return Policy <span class="text-red-500">*</span></label>
                                                 <select id="return-policy" required class="form-input mt-1 bg-white">
                                                     <option value="" disabled selected>Select a policy</option>
                                                     <option value="non-returnable">Non-Returnable</option>
@@ -196,13 +217,22 @@
                              <h2 class="text-3xl font-bold text-center mb-2">Review & Submit</h2><p class="text-center text-gray-600 mb-8">Please review all details before submitting your product.</p>
                              <div class="space-y-6">
                                 <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Product Images</h3><div id="review-images" class="grid grid-cols-4 gap-4"></div></div>
-                                <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Product Details</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm"><div><span class="review-label">Title:</span> <span id="review-title" class="review-value"></span></div><div><span class="review-label">Category:</span> <span id="review-category" class="review-value"></span></div><div><span class="review-label">Material:</span> <span id="review-material" class="review-value"></span></div><div><span class="review-label">Color:</span> <span id="review-color" class="review-value"></span></div><div><span class="review-label">HSN Code:</span> <span id="review-hsn-code" class="review-value"></span></div><div><span class="review-label">Size Variants:</span> <span id="review-size-variants" class="review-value"></span></div></div><div class="mt-2"><span class="review-label">Keywords:</span> <span id="review-keywords" class="review-value text-sm"></span></div><div class="mt-2"><span class="review-label">Key Features:</span><ul id="review-features" class="list-disc list-inside review-value text-sm"></ul></div></div>
+                                <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Product Details</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                                    <div><span class="review-label">Title:</span> <span id="review-title" class="review-value"></span></div>
+                                    <div><span class="review-label">Category:</span> <span id="review-category" class="review-value"></span></div>
+                                    <div><span class="review-label">Description:</span> <span id="review-description" class="review-value"></span></div>
+                                    <div><span class="review-label">Material:</span> <span id="review-material" class="review-value"></span></div>
+                                    <div><span class="review-label">Color:</span> <span id="review-color" class="review-value"></span></div>
+                                    <div><span class="review-label">HSN Code:</span> <span id="review-hsn-code" class="review-value"></span></div>
+                                    <div><span class="review-label">Size Variants:</span> <span id="review-size-variants" class="review-value"></span></div>
+                                </div><div class="mt-2"><span class="review-label">Keywords:</span> <span id="review-keywords" class="review-value text-sm"></span></div><div class="mt-2"><span class="review-label">Key Features:</span><ul id="review-features" class="list-disc list-inside review-value text-sm"></ul></div></div>
                                 <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Pricing & Policies</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
                                     <div><span class="review-label">MRP:</span> <span id="review-mrp" class="review-value"></span></div>
                                     <div><span class="review-label">Selling Price:</span> <span id="review-selling-price" class="review-value font-bold text-green-600"></span></div>
                                     <div><span class="review-label">Product Weight:</span> <span id="review-product-weight" class="review-value"></span></div>
                                     <div><span class="review-label">Package Weight:</span> <span id="review-package-weight" class="review-value"></span></div>
                                     <div><span class="review-label">Dimensions:</span> <span id="review-package-dimensions" class="review-value"></span></div>
+                                    <div><span class="review-label">Package Items:</span> <span id="review-package-items" class="review-value"></span></div>
                                     <div><span class="review-label">Stock:</span> <span id="review-stock" class="review-value"></span></div>
                                     <div><span class="review-label">Return Policy:</span> <span id="review-return-policy" class="review-value"></span></div>
                                     <div id="review-group-buy-container" class="hidden"><span class="review-label">Group Buy Price:</span> <span id="review-group-buy-price" class="review-value"></span></div>
@@ -238,46 +268,79 @@
             confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
         }
 
-        // Ye function backend se aayi listing text ko parse karega
         function parseListingText(text) {
             const details = {};
             const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
-
-            let currentFeatureBuffer = [];
-            let inFeaturesSection = false;
-
+        
+            let currentKey = '';
+            let currentFeatures = [];
+            let currentDescription = [];
+            let capturingDescription = false;
+            let currentPrice = null;
+            let currentProductWeight = null;
+            let currentPackageWeight = null;
+        
             for (const line of lines) {
                 if (line.startsWith("Title:")) {
                     details.title = line.replace("Title:", "").trim();
-                    inFeaturesSection = false;
+                    currentKey = 'title';
+                    capturingDescription = false;
+                } else if (line.startsWith("Description:")) {
+                    details.description = line.replace("Description:", "").trim();
+                    currentKey = 'description';
+                    capturingDescription = true;
                 } else if (line.startsWith("Material:")) {
                     details.material = line.replace("Material:", "").trim();
-                    inFeaturesSection = false;
+                    currentKey = 'material';
+                    capturingDescription = false;
                 } else if (line.startsWith("Color:")) {
                     details.color = line.replace("Color:", "").trim();
-                    inFeaturesSection = false;
+                    currentKey = 'color';
+                    capturingDescription = false;
                 } else if (line.startsWith("Features:")) {
-                    inFeaturesSection = true; // Ab features section mein enter ho gaye
+                    currentKey = 'features';
+                    capturingDescription = false;
                 } else if (line.startsWith("SEO Keywords:")) {
                     details.keywords = line.replace("SEO Keywords:", "").trim();
-                    inFeaturesSection = false; // Features section se bahar
-                    if (currentFeatureBuffer.length > 0) {
-                        details.features = currentFeatureBuffer.join('\n');
-                        currentFeatureBuffer = []; // Reset for next use if any
-                    }
+                    currentKey = 'keywords';
+                    capturingDescription = false;
                 } else if (line.startsWith("HSN Code:")) {
                     details.hsnCode = line.replace("HSN Code:", "").trim();
-                    inFeaturesSection = false; // Features section se bahar
-                } else if (inFeaturesSection && line.startsWith("- ")) {
-                    currentFeatureBuffer.push(line.replace("- ", "").trim());
-                } else if (inFeaturesSection && line.length > 0) { // Agar koi line bullet point nahi hai but features section mein hai
-                     currentFeatureBuffer.push(line);
+                    currentKey = 'hsnCode';
+                    capturingDescription = false;
+                } else if (line.startsWith("Suggested Selling Price:")) {
+                    const priceMatch = line.match(/₹(\d+)/);
+                    if (priceMatch) details.suggestedSellingPrice = priceMatch[1];
+                    currentKey = 'suggestedPrice';
+                } else if (line.startsWith("Estimated Product Weight:")) {
+                    const weightMatch = line.match(/(\d+\.?\d*)\s*KG/i);
+                    if (weightMatch) details.estimatedProductWeight = weightMatch[1];
+                    currentKey = 'estimatedProductWeight';
+                } else if (line.startsWith("Estimated Package Weight:")) {
+                    const weightMatch = line.match(/(\d+\.?\d*)\s*KG/i);
+                    if (weightMatch) details.estimatedPackageWeight = weightMatch[1];
+                    currentKey = 'estimatedPackageWeight';
+                } else {
+                    if (capturingDescription) {
+                        currentDescription.push(line);
+                    } else if (currentKey === 'features' && line.startsWith("- ")) {
+                        currentFeatures.push(line.replace("- ", "").trim());
+                    } else if (currentKey === 'features' && line.length > 0) {
+                        currentFeatures.push(line);
+                    } else {
+                        // Ignore other lines
+                    }
                 }
             }
-            // Loop khatam hone ke baad, agar features collect huye hain aur abhi tak set nahi huye
-            if (currentFeatureBuffer.length > 0 && !details.features) {
-                details.features = currentFeatureBuffer.join('\n');
+        
+            if (currentFeatures.length > 0) {
+                details.features = currentFeatures.join('\n');
             }
+        
+            if (currentDescription.length > 0) {
+                details.description += '\n' + currentDescription.join('\n');
+            }
+        
             return details;
         }
 
@@ -322,7 +385,8 @@
                 productData.images.forEach((file, index) => {
                     const slot = document.createElement('div'); slot.className = 'upload-slot';
                     if (file) { slot.innerHTML = `<img src="${URL.createObjectURL(file)}">`; } 
-                    else { slot.innerHTML = `<div><span class="text-4xl text-gray-400">+</span><span class="block text-xs mt-1 font-semibold text-gray-500">${index === 0 ? 'Main Image' : `Image ${index + 1}`}</span></div>`; slot.onclick = () => wizardFileInput.click(); }
+                    else { slot.innerHTML = `<div><span class="text-4xl text-gray-400">+</span><span class="block text-xs mt-1 font-semibold text-gray-500">${index === 0 ? 'Main Image' : `Image ${index + 1}`}</span></div>`; }
+                    slot.onclick = () => wizardFileInput.click();
                     wizardSlotsContainer.appendChild(slot);
                 });
                 const filledSlots = productData.images.filter(f => f !== null).length;
@@ -335,7 +399,6 @@
                 renderWizardSlots();
             });
 
-            // Ye function AI polishing step ko handle karega
             document.getElementById('wizard-step1-next').addEventListener('click', async () => {
                 appState.wizardStep = 2;
                 render();
@@ -369,13 +432,28 @@
                     const data = await response.json();
                     const listingText = data.listing;
 
-                    document.getElementById('image-after').src = URL.createObjectURL(mainImageFile);
+                    // Yahan par polished image ka URL update kiya gaya hai
+                    document.getElementById('image-after').src = data.polishedImageUrl;
 
                     document.getElementById('ai-image-loader').style.display = 'none';
                     document.getElementById('ai-image-results').style.display = 'block';
 
                     const parsedDetails = parseListingText(listingText);
                     Object.assign(productData, parsedDetails);
+                    
+                    // AI suggestions ko form mein daalna
+                    if (productData.suggestedSellingPrice) {
+                        document.getElementById('ai-price-suggestion-text').innerHTML = `To be competitive, we suggest a price around **₹${productData.suggestedSellingPrice}**.`;
+                        document.getElementById('sellingPrice').value = productData.suggestedSellingPrice;
+                    }
+
+                    if (productData.estimatedProductWeight) {
+                        document.getElementById('product-weight').value = productData.estimatedProductWeight;
+                    }
+
+                    if (productData.estimatedPackageWeight) {
+                        document.getElementById('package-weight').value = productData.estimatedPackageWeight;
+                    }
 
                 } catch (error) {
                     console.error("Error during API call or processing:", error);
@@ -393,9 +471,10 @@
             document.getElementById('wizard-step2-next').addEventListener('click', () => {
                  appState.wizardStep = 3;
                  render();
-
+                 
                  document.getElementById('title').value = productData.title || '';
                  document.getElementById('category').value = productData.category || '';
+                 document.getElementById('description').value = productData.description || '';
                  document.getElementById('features').value = productData.features || '';
                  document.getElementById('keywords').value = productData.keywords || '';
                  document.getElementById('material').value = productData.material || '';
@@ -408,29 +487,41 @@
             document.getElementById('wizard-step3-back').addEventListener('click', () => { appState.wizardStep = 2; render(); });
             document.getElementById('detailsForm').addEventListener('submit', (e) => {
                 e.preventDefault();
-                Object.assign(productData, { title: document.getElementById('title').value, category: document.getElementById('category').value, features: document.getElementById('features').value, keywords: document.getElementById('keywords').value, material: document.getElementById('material').value, color: document.getElementById('color').value, hsnCode: document.getElementById('hsn-code').value, sizeVariants: document.getElementById('size-variants').value });
+                Object.assign(productData, {
+                    title: document.getElementById('title').value,
+                    category: document.getElementById('category').value,
+                    description: document.getElementById('description').value,
+                    features: document.getElementById('features').value,
+                    keywords: document.getElementById('keywords').value,
+                    material: document.getElementById('material').value,
+                    color: document.getElementById('color').value,
+                    hsnCode: document.getElementById('hsn-code').value,
+                    sizeVariants: document.getElementById('size-variants').value
+                });
                 appState.wizardStep = 4; render();
             });
 
             // WIZARD STEP 4: PRICING
-            const mrpInput = document.getElementById('mrp'); const sellingPriceInput = document.getElementById('sellingPrice'); const exampleText = document.getElementById('mrp-example-text');
+            const mrpInput = document.getElementById('mrp');
+            const sellingPriceInput = document.getElementById('sellingPrice');
+            const exampleText = document.getElementById('mrp-example-text');
             function updateMrpExample() { const mrp = mrpInput.value || '0'; const sp = sellingPriceInput.value || '0'; exampleText.innerHTML = `Example: <span class="strike">₹${mrp}</span> <span class="final-price">₹${sp}</span>`; }
             mrpInput.addEventListener('input', updateMrpExample); sellingPriceInput.addEventListener('input', updateMrpExample);
             document.getElementById('wizard-step4-back').addEventListener('click', () => { appState.wizardStep = 3; render(); });
             document.getElementById('pricingForm').addEventListener('submit', (e) => {
                 e.preventDefault();
-                // Naye fields ki values ko yahan capture kiya gaya hai
                 const pricingData = {
                     mrp: document.getElementById('mrp').value,
                     sellingPrice: document.getElementById('sellingPrice').value,
-                    productWeight: document.getElementById('product-weight').value, // Naya field
-                    packageWeight: document.getElementById('package-weight').value, // Naya field
-                    packageDimensions: { // Naye fields
+                    productWeight: document.getElementById('product-weight').value,
+                    packageWeight: document.getElementById('package-weight').value,
+                    packageDimensions: {
                         length: document.getElementById('package-dimensions-length').value,
                         breadth: document.getElementById('package-dimensions-breadth').value,
                         height: document.getElementById('package-dimensions-height').value,
                         unit: document.getElementById('package-dimensions-unit').value
                     },
+                    packageItems: document.getElementById('package-items').value,
                     stock: document.getElementById('stock').value,
                     returnPolicy: document.getElementById('return-policy').value
                 };
@@ -453,12 +544,17 @@
             });
             function populateReviewPage() {
                 document.getElementById('review-images').innerHTML = productData.images.map(file => file ? `<img src="${URL.createObjectURL(file)}" class="w-full h-auto rounded-md object-cover">` : '').join('');
-                document.getElementById('review-title').textContent = productData.title; document.getElementById('review-category').textContent = productData.category; document.getElementById('review-material').textContent = productData.material; document.getElementById('review-color').textContent = productData.color; document.getElementById('review-hsn-code').textContent = productData.hsnCode; document.getElementById('review-size-variants').textContent = productData.sizeVariants || 'N/A';
+                document.getElementById('review-title').textContent = productData.title;
+                document.getElementById('review-category').textContent = productData.category;
+                document.getElementById('review-description').textContent = productData.description;
+                document.getElementById('review-material').textContent = productData.material;
+                document.getElementById('review-color').textContent = productData.color;
+                document.getElementById('review-hsn-code').textContent = productData.hsnCode;
+                document.getElementById('review-size-variants').textContent = productData.sizeVariants || 'N/A';
                 const featuresList = document.getElementById('review-features');
                 featuresList.innerHTML = ''; productData.features.split('\n').forEach(feature => { if (feature.trim()) { const li = document.createElement('li'); li.textContent = feature.trim(); featuresList.appendChild(li); } });
                 document.getElementById('review-mrp').textContent = `₹${productData.mrp}`; document.getElementById('review-selling-price').textContent = `₹${productData.sellingPrice}`;
 
-                // Naye fields ki values ko yahan display kiya gaya hai
                 document.getElementById('review-product-weight').textContent = productData.productWeight ? `${productData.productWeight} KG` : 'N/A';
                 document.getElementById('review-package-weight').textContent = productData.packageWeight ? `${productData.packageWeight} KG` : 'N/A';
                 if (productData.packageDimensions && productData.packageDimensions.length && productData.packageDimensions.breadth && productData.packageDimensions.height) {
@@ -466,6 +562,7 @@
                 } else {
                     document.getElementById('review-package-dimensions').textContent = 'N/A';
                 }
+                document.getElementById('review-package-items').textContent = productData.packageItems || 'N/A';
 
                 document.getElementById('review-stock').textContent = `${productData.stock} units`;
                 document.getElementById('review-return-policy').textContent = productData.returnPolicy;
