@@ -1,1539 +1,484 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Banjara Bazaar - New Product Listing Wizard</title>
-    
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banjara Bazaar - Seller Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    
     <style>
-        /* Custom Styles - Overriding or extending Tailwind for specific elements */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #FACC15; /* Corrected: yellow-50 */
-            color: #333; 
-        }
-        .logo { 
-            font-family: 'Playfair Display', serif; 
-            color: #92400E; 
-        }
-        
-        /* Progress Bar Styling */
-        .progress-bar-section { 
-            margin-bottom: 2rem; 
-        }
-        .progress-steps-container {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: flex-start; 
-            position: relative; 
-            margin-top: 1.5rem; 
-        }
-        .progress-step { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            position: relative; 
-            flex-shrink: 0; 
-            width: 20%; 
-            text-align: center;
-            color: #6B7280; 
-        }
-        .progress-circle { 
-            width: 2rem; 
-            height: 2rem; 
-            border-radius: 9999px; 
-            background-color: #E5E7EB; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 600; 
-            z-index: 10; 
-            transition: all 0.3s ease; 
-        }
-        .progress-label { 
-            font-size: 0.75rem; 
-            margin-top: 0.5rem; 
-            white-space: nowrap; 
-        }
-        .progress-line { 
-            position: absolute; 
-            top: 1rem; 
-            height: 0.125rem; 
-            background-color: #E5E7EB; 
-            z-index: 1; 
-            width: calc(20% - 1.5rem); 
-            transform: translateX(-50%);
-        }
-        #progressLine1 { left: calc(20% * 0.5 + 0.5rem); } 
-        #progressLine2 { left: calc(20% * 1.5 + 0.5rem); }
-        #progressLine3 { left: calc(20% * 2.5 + 0.5rem); }
-        #progressLine4 { left: calc(20% * 3.5 + 0.5rem); }
-
-        /* Progress States */
-        .progress-step.active .progress-circle,
-        .progress-step.completed .progress-circle { 
-            background-color: #FACC15; 
-            color: #000000; 
-        }
-        .progress-step.active .progress-label,
-        .progress-step.completed .progress-label { 
-            font-weight: 600; 
-            color: #D97706; 
-        }
-        .progress-line.completed { 
-            background-color: #FACC15; 
-        }
-
-        /* Button Styles */
-        .main-btn { 
-            background-color: #FACC15; 
-            color: #000000; 
-            font-weight: 600; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 0.5rem; 
-            border: none; 
-            cursor: pointer; 
-            transition: background-color 0.2s ease; 
-        }
-        .main-btn:hover { background-color: #EAB308; }
-        .main-btn:disabled { background-color: #D1D5DB; color: #6B7280; cursor: not-allowed; }
-        .secondary-btn { 
-            background-color: #E5E7EB; 
-            color: #1F2937; 
-            font-weight: 600; 
-            padding: 0.75rem 1.5rem; 
-            border-radius: 0.5rem; 
-            border: none; 
-            cursor: pointer; 
-            transition: background-color 0.2s ease; 
-        }
-        .secondary-btn:hover { background-color: #D1D5DB; }
+        body { font-family: 'Inter', sans-serif; background-color: #fefce8; }
         .hidden { display: none; }
-
-        /* Accordion Styles */
-        .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
-        .accordion-header.active + .accordion-content { max-height: 1000px; transition: max-height 0.5s ease-in; } 
-        .arrow { transition: transform 0.3s ease; }
-        .accordion-header.active .arrow { transform: rotate(180deg); }
-
-        /* General form styles to ensure consistency */
-        .form-group { margin-bottom: 1.5rem; }
-        .form-label { 
-            display: block; 
-            font-size: 0.875rem; 
-            font-weight: 500; 
-            color: #374151; 
-            margin-bottom: 0.5rem; 
-        }
-        .form-input { 
-            display: block; 
-            width: 100%; 
-            padding: 0.75rem; 
-            border: 1px solid #D1D5DB; 
-            border-radius: 0.375rem; 
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); 
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #FACC15; 
-            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.5); 
-        }
-
-        /* --- STEP 3 PRICING DISPLAY (Example text) --- */
-        .mrp-example-text { 
-            margin-top: 0.25rem;
-            font-size: 0.75rem; /* text-xs */
-            color: #6B7280; /* gray-500 */
-        }
-        .mrp-example-text s { 
-            color: #EF4444; /* red-500 */
-            text-decoration: line-through;
-        }
-        .mrp-example-text .selling-price-display-example { 
-            font-weight: 600; /* font-semibold */
-            color: #16A34A; /* green-700 */
-        }
-
-        /* --- STEP 1 IMAGE UPLOADER SPECIFIC STYLES --- */
-        .upload-slot { 
-            position: relative; 
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border: 2px dashed #D1D5DB; 
-            border-radius: 0.5rem; 
-            display: flex;
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            text-align: center;
-            color: #9CA3AF; 
-            cursor: pointer;
-            background-color: #F9FAFB;
-        }
-        .upload-slot:hover { border-color: #FACC15; }
-        .upload-slot img { width: 100%; height: 100%; object-fit: cover; border-radius: 0.5rem; }
-        .remove-btn { 
-            position: absolute; 
-            top: 0.25rem; 
-            right: 0.25rem; 
-            background-color: rgba(0,0,0,0.6); 
-            color: white; 
-            border-radius: 9999px; 
-            width: 1.5rem; 
-            height: 1.5rem; 
-            line-height: 1.5rem; 
-            text-align: center; 
-            font-weight: bold; 
-            border: none; 
-            cursor: pointer; 
-        }
-        .main-image-label { 
-            position: absolute;
-            bottom: 0.25rem;
-            left: 0.25rem;
-            background-color: #FACC15; 
-            color: #000000;
-            font-size: 0.65rem;
-            font-weight: 600;
-            padding: 0.1rem 0.4rem;
-            border-radius: 0.25rem;
-            z-index: 20;
-        }
-        /* Style for the inner content of empty slots */
-        .upload-slot > div.empty-slot-content { 
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-            justify-content: center; 
-            width: 100%; 
-            height: 100%; 
-            padding: 0.5rem; 
-        }
-        .upload-slot > div.empty-slot-content span.text-4xl {
-            margin-bottom: 0.25rem; 
-            color: #9CA3AF; 
-        }
-        .upload-slot > div.empty-slot-content span.block.text-xs {
-            color: #6B7280; 
-        }
-
-        /* --- STEP 4 DIMENSIONS UNIT TOGGLE --- */
-        .dimensions-label-group {
-            display: flex;
-            align-items: center; 
-            gap: 0.5rem; 
-            margin-bottom: 0.5rem; 
-        }
-        .dimensions-label-group .form-label {
-            margin-bottom: 0; 
-            flex-shrink: 0; 
-        }
-        .unit-toggle-select {
-            padding: 0.4rem 0.6rem;
-            border: 1px solid #D1D5DB;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            background-color: #F9FAFB;
-            cursor: pointer;
-            height: 38px; 
-            box-sizing: border-box; 
-        }
-        .unit-toggle-select:focus {
-            outline: none;
-            border-color: #FACC15; 
-            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.5); 
-        }
-        /* Ensure dimension inputs are not too small */
-        .dimensions-input-group input[type="number"] {
-            flex-grow: 1; 
-            min-width: 60px; 
-        }
-        /* Placeholder styling for better visibility */
-        .form-input::placeholder {
-            color: #9CA3AF; 
-            opacity: 1; 
-        }
-        ::-webkit-input-placeholder { color: #9CA3AF; opacity: 1; }
-        ::-moz-placeholder { color: #9CA3AF; opacity: 1; }
-        :-ms-input-placeholder { color: #9CA3AF; opacity: 1; }
-        :-ms-input-placeholder { color: #9CA3AF; opacity: 1; }
-
-
-        /* --- REVIEW PAGE SPECIFIC STYLES --- */
-        .review-section-header {
-            font-weight: 600;
-            font-size: 1.125rem;
-            color: #374151;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #E5E7EB;
-        }
-        .review-item {
-            margin-bottom: 0.75rem;
-            display: flex;
-            flex-wrap: wrap; 
-            align-items: baseline; 
-        }
-        .review-label {
-            font-weight: 500;
-            color: #4B5563; 
-            width: 150px; 
-            flex-shrink: 0; 
-        }
-        .review-value {
-            color: #1F2937; 
-            flex-grow: 1; 
-        }
-        .review-value.image-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        .review-image {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 4px;
-            border: 1px solid #E5E7EB;
-        }
-        .review-features-list {
-            list-style: none; 
-            padding-left: 0;
-            margin-left: 150px; 
-        }
-        .review-features-list li {
-            position: relative;
-            padding-left: 1.5em; 
-            margin-bottom: 0.25em;
-        }
-        .review-features-list li::before {
-            content: '•'; 
-            position: absolute;
-            left: 0;
-            color: #D97706; 
-            font-weight: bold;
-            font-size: 1.2em;
-            line-height: 1;
-        }
-        /* Specific styling for nested review subsections */
-        .review-subsection {
-            border-left: 3px solid #FACC15; 
-            padding-left: 1rem;
-            margin-left: 1rem;
-            margin-top: 1rem;
-            padding-top: 0.5rem;
-        }
-        .review-subsection .review-item {
-            margin-left: 0; 
-        }
-        .review-subsection .review-label {
-            width: 130px; 
-        }
+        .form-input { border: 1px solid #d1d5db; border-radius: 0.5rem; padding: 0.75rem; width: 100%; transition: all 0.2s; }
+        .form-input:focus { border-color: #facc15; box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.4); outline: none; }
+        .wizard-container { background-color: #fff; border-radius: 1.5rem; box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); width: 100%; max-width: 56rem; padding: 2rem; transition: all 0.3s ease-in-out; }
+        .wizard-progress-bar { display: flex; align-items: center; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e5e7eb; }
+        .wizard-progress-step { flex: 1; text-align: center; color: #6b7280; font-weight: 600; position: relative; }
+        .wizard-progress-dot { height: 2rem; width: 2rem; margin: 0 auto; border-radius: 9999px; border: 2px solid #e5e7eb; background-color: #fff; color: #6b7280; display: flex; align-items: center; justify-content: center; transition: all 0.3s; position: relative; z-index: 2; font-weight: 700; }
+        .wizard-progress-step.active .wizard-progress-dot, .wizard-progress-step.completed .wizard-progress-dot { border-color: #f59e0b; background-color: #f59e0b; color: white; transform: scale(1.1); }
+        .wizard-progress-label { margin-top: 0.75rem; font-size: 0.8rem; }
+        .wizard-progress-line { position: absolute; height: 2px; width: 100%; background: #e5e7eb; top: 1rem; transform: translateY(-50%); left: -50%; z-index: 1; }
+        .wizard-progress-step:first-child .wizard-progress-line { display: none; }
+        .wizard-progress-step.completed .wizard-progress-line { background: #f59e0b; }
+        .upload-slot { position: relative; width: 100%; aspect-ratio: 1 / 1; border: 2px dashed #d1d5db; border-radius: 0.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #a0aec0; cursor: pointer; background-color: #f7fafc; overflow: hidden; }
+        .upload-slot:hover { border-color: #facc15; }
+        .upload-slot img { width: 100%; height: 100%; object-fit: cover; }
+        .mrp-example { color: #6b7280; font-size: 0.8rem; margin-top: -0.5rem; padding-left: 0.25rem; }
+        .mrp-example .strike { text-decoration: line-through; color: #ef4444; }
+        .mrp-example .final-price { color: #16a34a; font-weight: 600; }
+        .ai-suggestion-box { background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 0.5rem; padding: 0.75rem; margin-top: 1rem; display: flex; align-items: center; }
+        .review-section { margin-bottom: 1.5rem; }
+        .review-label { font-weight: 600; color: #4b5563; }
+        .review-value { color: #1f2937; }
+        details > summary { list-style: none; cursor: pointer; font-weight: 600; font-size: 1.125rem; padding: 1rem; border: 1px solid #e5e7eb; border-radius: 0.5rem; display: flex; justify-content: space-between; align-items: center;}
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] > summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+        details .details-content { padding: 1.5rem; border: 1px solid #e5e7eb; border-top: 0; border-bottom-left-radius: 0.5rem; border-bottom-right-radius: 0.5rem; }
+        details > summary .arrow { transition: transform 0.2s; }
+        details[open] > summary .arrow { transform: rotate(180deg); }
+        .tooltip { position: relative; display: inline-block; }
+        .tooltip .tooltiptext { visibility: hidden; width: 220px; background-color: #333; color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 1; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 0.8rem; font-weight: 500;}
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+        .voice-input-container { position: relative; width: 100%; }
+        .voice-input-container textarea { padding-right: 2.5rem; }
+        .voice-input-icon { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6b7280; }
+        .voice-input-icon:hover { color: #1f2937; }
     </style>
 </head>
-<body> 
-
-    <div class="min-h-screen flex items-center justify-center px-4 py-12">
-        <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 md:p-8" id="stepContainer">
-            
-            <div class="flex justify-between items-center font-semibold mb-6">
-                <a href="#" class="logo text-2xl">Banjara Bazaar</a>
-                <span class="text-gray-500 text-sm">New Product Listing</span>
-            </div>
-            <hr class="my-6 border-gray-200" />
-            
-            <div class="progress-bar-section">
-                <div class="progress-steps-container">
-                    <div id="progressStep1" class="progress-step">
-                        <div class="progress-circle">1</div>
-                        <p class="progress-label">Identity</p>
-                    </div>
-                    <div id="progressLine1" class="progress-line"></div>
-                    <div id="progressStep2" class="progress-step">
-                        <div class="progress-circle">2</div>
-                        <p class="progress-label">Details</p>
-                    </div>
-                    <div id="progressLine2" class="progress-line"></div>
-                    <div id="progressStep3" class="progress-step">
-                        <div class="progress-circle">3</div>
-                        <p class="progress-label">Pricing</p>
-                    </div>
-                    <div id="progressLine3" class="progress-line"></div>
-                    <div id="progressStep4" class="progress-step">
-                        <div class="progress-circle">4</div>
-                        <p class="progress-label">Logistics</p>
-                    </div>
-                    <div id="progressLine4" class="progress-line"></div>
-                    <div id="progressStep5" class="progress-step">
-                        <div class="progress-circle">5</div>
-                        <p class="progress-label">Review</p>
-                    </div>
-                </div>
-            </div>
-            <hr class="my-6 border-gray-200" />
-
-            <div id="step-1" class="hidden">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Step 1: Upload Your Product Photos</h2>
-                    <p class="text-gray-600 mt-2">Upload exactly 4 high-quality photos. The first image will be your main cover image.</p>
-                </div>
-                
-                <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
-                    <b>Pro Tip:</b> For best results, upload square images (1080x1080 pixels).</p>
-                </div>
-
-                <div class="mt-6">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="image-upload-slots">
-                        </div>
-                    <input id="file-upload" type="file" class="hidden" accept=".png, .jpg, .jpeg, .webp" multiple>
-                </div>
-                
-                <div class="text-center mt-4 h-5">
-                    <p id="upload-status-message" class="text-sm font-semibold"></p>
-                </div>
-
-                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end">
-                    <button id="step1-next-btn" class="main-btn" disabled>Next: Add Product Details &rarr;</button>
-                </div>
-            </div>
-
-            <div id="step-2" class="hidden">
-                <div class="flex items-start gap-4 mb-8">
-                    <img id="step2-main-image" src="https://placehold.co/64x64/FFFFFF/333333?text=Img" class="rounded-md border border-gray-200" alt="Product Main Image" style="width:64px; height:64px;"> 
-                    <div>
-                        <h2 class="text-3xl font-bold text-gray-900">Step 2: Details & Categorization</h2>
-                        <p class="text-gray-600 mt-2">Confirm the AI-suggested details for your product.</p>
-                    </div>
-                </div>
-                
-                <div class="space-y-4 pt-6 border-t border-gray-200">
-                    <div class="form-group">
-                        <label class="form-label" for="title">Product Title <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Enter a short, descriptive name for your item without including the brand name.')">?</button></label>
-                        <input type="text" id="title" class="form-input mandatory-field-step2" value="Handcrafted Wooden Serving Tray">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="description">Product Description <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Write a detailed paragraph about your product, its story, and key features.')">?</button></label>
-                        <textarea id="description" rows="5" class="form-input mandatory-field-step2">A beautifully hand-painted wooden tray, perfect for serving guests or as a decorative piece. Made from sustainable Sheesham wood with intricate mosaic work.</textarea>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="features">Key Features (1 per line) <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('List 3-5 key features or bullet points that highlight what makes your product special.')">?</button></label>
-                        <textarea id="features" rows="4" class="form-input mandatory-field-step2">Handmade mosaic design
-Durable Sheesham wood
-Perfect for serving and display
-Easy to clean</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label" for="keywords">Search Keywords <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Enter comma-separated keywords that customers might use to find your product.')">?</button></label>
-                        <input type="text" id="keywords" class="form-input mandatory-field-step2" value="wooden serving tray, mosaic tray, gift set, kitchenware, home decor">
-                    </div>
-                    
-                    <div class="pt-6 border-t border-gray-200 space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                            <div class="form-group">
-                                <label for="category" class="form-label">Category <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Select the most relevant category for your product.')">?</button></label>
-                                <select id="category" class="form-input mandatory-field-step2"> 
-                                    <option value="">-- Select Category --</option> 
-                                    <option value="crockery">Crockery</option> 
-                                    <option value="decor">Home Decor</option>
-                                    <option value="furniture">Furniture</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="hsn-code" class="form-label">HSN Code <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Harmonized System of Nomenclature code is required for GST purposes. It is a unique 8-digit code for your product.')">?</button></label>
-                                <input type="text" id="hsn-code" class="form-input mandatory-field-step2" placeholder="e.g., 44190020">
-                            </div>
+<body>
+    <div id="app-container">
+        <div id="view-product-wizard">
+             <div class="min-h-screen flex items-center justify-center px-4 py-12 bg-yellow-100">
+                <div class="wizard-container">
+                    <div id="wizard-steps-wrapper">
+                        <div class="wizard-progress-bar">
+                            <div id="wp-step-1" class="wizard-progress-step"><div class="wizard-progress-dot">1</div><div class="wizard-progress-label">Images</div></div>
+                            <div id="wp-step-2" class="wizard-progress-step"><div class="wizard-progress-dot">2<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">AI Polish</div></div>
+                            <div id="wp-step-3" class="wizard-progress-step"><div class="wizard-progress-dot">3<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">Details</div></div>
+                            <div id="wp-step-4" class="wizard-progress-step"><div class="wizard-progress-dot">4<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">Pricing</div></div>
+                            <div id="wp-step-5" class="wizard-progress-step"><div class="wizard-progress-dot">5<div class="wizard-progress-line"></div></div><div class="wizard-progress-label">Review</div></div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-x-6">
-                             <div class="form-group">
-                                <label for="material" class="form-label">Material <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Specify the primary material of your product.')">?</button></label>
-                                <input type="text" id="material" class="form-input mandatory-field-step2" value="Sheesham Wood">
+                        <div id="wizard-step-1-content">
+                            <h2 class="text-3xl font-bold text-center mb-2">List a New Product</h2>
+                            <p class="text-center text-gray-600 mb-6">Start by uploading 4 clear photos of your product.</p>
+                            <div class="flex justify-center gap-4 mb-6 text-xs text-center">
+                                <div><img src="https://i.imgur.com/Uf24T4N.png" class="w-20 h-20 rounded border-2 border-green-400"><span class="font-semibold text-green-600">✓ Correct</span></div>
+                                <div><img src="https://i.imgur.com/uTyA1u3.png" class="w-20 h-20 rounded border-2 border-red-400"><span class="font-semibold text-red-600">✗ Incorrect</span></div>
                             </div>
-                            
-                            <div class="form-group">
-                                <label for="color-select" class="form-label">Color Variants <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Select predefined colors or choose custom if your color is not listed.')">?</button></label>
-                                <select id="color-select" class="form-input mandatory-field-step2"> 
-                                    <option value="">-- Select Color --</option> 
-                                    <option value="Brown">Brown</option>
-                                    <option value="Black">Black</option>
-                                    <option value="White">White</option>
-                                    <option value="Multi-color">Multi-color</option>
-                                    <option value="Red">Red</option>
-                                    <option value="Blue">Blue</option>
-                                    <option value="Green">Green</option>
-                                    <option value="custom">Custom...</option>
-                                </select>
-                                <input type="text" id="custom-color-input" class="form-input mt-2 hidden" placeholder="Enter custom color">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="size" class="form-label">Size Variants <span class="text-red-500">*</span> <button class="help-btn" onclick="alert('Select the size of your product.')">?</button></label>
-                                <select id="size" class="form-input mandatory-field-step2"> 
-                                    <option value="">-- Select Size --</option>
-                                    <option value="small">Small</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="large">Large</option>
-                                    <option value="one-size">One Size Fits All</option>
-                                </select>
-                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="image-upload-slots"></div>
+                            <input id="file-upload-wizard" type="file" class="hidden" accept="image/*" multiple>
+                            <p id="wizard-upload-status" class="text-center text-sm font-semibold mt-4 h-5 text-red-600"></p>
+                            <div class="mt-8 pt-6 border-t flex justify-end"><button id="wizard-step1-next" class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-5 rounded-lg shadow disabled:bg-gray-300" disabled>Next →</button></div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
-                    <button id="step2-back-btn" class="secondary-btn">&larr; Back to Images</button>
-                    <button id="step2-next-btn" class="main-btn" disabled>Next: Pricing &rarr;</button>
-                </div>
-            </div>
-
-            <div id="step-3" class="hidden">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Step 3: Set Pricing, Inventory & Policies</h2>
-                    <p class="text-gray-600 mt-2">Define the prices for different buyers and set your stock availability.</p>
-                </div>
-                
-                <form class="mt-8 flex flex-col space-y-6" id="pricing-form">
-                    <div class="border border-gray-200 rounded-lg">
-                        <button type="button" class="accordion-header active w-full flex justify-between items-center p-4 cursor-pointer bg-gray-50">
-                            <span class="font-semibold text-lg text-gray-800">Individual Buyer Pricing <span class="text-red-500">*</span></span>
-                            <span class="arrow text-gray-500">▼</span>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 border-t border-gray-200">
-                                <p class="mrp-example-text mb-4">
-                                    Example: <s id="displayed-mrp-example">₹2000</s> <span id="displayed-selling-price-example" class="selling-price-display-example">₹1500</span>
-                                </p>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                    <div class="form-group">
-                                        <label for="mrp" class="form-label">MRP (Maximum Retail Price) <span class="text-red-500">*</span> <button type="button" class="help-btn" onclick="alert('The Maximum Retail Price. This will be shown to the customer with a line through it to indicate a discount.')">?</button></label>
-                                        <input type="number" id="mrp" value="2000" class="form-input mandatory-field-step3">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="selling-price" class="form-label">Selling Price <span class="text-red-500">*</span> <button type="button" class="help-btn" onclick="alert('The price an individual customer pays. This will be the base for AI suggestions.')">?</button></label>
-                                        <input type="number" id="selling-price" value="1500" class="form-input mandatory-field-step3">
-                                    </div>
+                        
+                        <div id="wizard-step-2-content" class="hidden">
+                            <div id="ai-image-loader" class="text-center py-12"><div role="status"><svg aria-hidden="true" class="inline w-10 h-10 text-gray-200 animate-spin fill-yellow-400" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5424 39.6781 93.9676 39.0409Z" fill="currentColor"/></svg></div><h2 class="text-2xl font-bold text-center mt-4">Our AI is polishing your images and generating details... ✨</h2><p class="text-center text-gray-600">Please wait, this might take a moment.</p></div>
+                            <div id="ai-image-results" class="hidden"><h2 class="text-3xl font-bold text-center mb-2">Approve Enhanced Image (For Demo Only)</h2><p class="text-center text-gray-600 mb-8">We've processed your primary image. Please approve to continue. (Visual polishing is for demo, actual details are generated)</p><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="text-center"><h4 class="font-bold mb-2">Before</h4><img id="image-before" src="" class="rounded-lg shadow-md w-full"></div><div class="text-center"><h4 class="font-bold mb-2">After (AI Processed)</h4><img id="image-after" src="" class="rounded-lg shadow-md w-full"></div></div><div class="mt-6 text-center"><label class="inline-flex items-center"><input id="approve-images-check" type="checkbox" class="h-5 w-5 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"><span class="ml-2 text-gray-700 font-semibold">I approve the processed images.</span></label></div><div class="mt-8 pt-6 border-t flex justify-between"><button id="wizard-step2-back" class="bg-gray-200 hover:bg-gray-300 font-semibold py-2 px-5 rounded-lg">← Back</button><button id="wizard-step2-next" class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-5 rounded-lg shadow disabled:bg-gray-300" disabled>Next →</button></div></div>
+                        </div>
+                        
+                        <div id="wizard-step-3-content" class="hidden">
+                             <h2 class="text-3xl font-bold text-center mb-2">Product Details</h2><p class="text-center text-gray-600 mb-8">Review the AI-generated details and add specifics.</p>
+                             <form id="detailsForm" class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="font-medium" for="title">Product Title</label><input type="text" id="title" required class="form-input mt-1"></div>
+                                    <div><label class="font-medium" for="category">Category</label><select id="category" required class="form-input mt-1 bg-white"><option value="">Select Category</option><option>Home Decor</option><option>Furniture</option><option>Kitchenware</option></select></div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg">
-                        <button type="button" class="accordion-header w-full flex justify-between items-center p-4 cursor-pointer bg-gray-50">
-                            <span class="font-semibold text-lg text-gray-800">Group Buy Pricing (Optional)</span>
-                            <span class="arrow text-gray-500">▼</span>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 border-t border-gray-200 space-y-4">
-                                <label class="flex items-center"><input id="enable-group-buy" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"><span class="ml-2 text-gray-700">Enable Group Buy for this product</span></label>
-                                <div id="group-buy-inputs" class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                    <div class="form-group">
-                                        <label for="group-price" class="form-label">Group Buy Price (per item) <button type="button" class="help-btn" onclick="alert('The special discounted price for members of a group buy.')">?</button></label>
-                                        <input type="number" id="group-price" placeholder="AI Suggestion..." class="form-input" disabled>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="group-moq" class="form-label">Group Buy MOQ <button type="button" class="help-btn" onclick="alert('The minimum total items the group must buy to get this price.')">?</button></label>
-                                        <input type="number" id="group-moq" placeholder="e.g., 5" class="form-input" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg">
-                        <button type="button" class="accordion-header w-full flex justify-between items-center p-4 cursor-pointer bg-gray-50">
-                            <span class="font-semibold text-lg text-gray-800">Wholesale Pricing (Optional)</span>
-                            <span class="arrow text-gray-500">▼</span>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 border-t border-gray-200 space-y-4">
-                                <label class="flex items-center"><input id="enable-wholesale" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-yellow-600 focus:ring-yellow-500"><span class="ml-2 text-gray-700">Enable Wholesale for this product</span></label>
-                                <div id="wholesale-inputs" class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                    <div class="form-group">
-                                        <label for="wholesale-price" class="form-label">Wholesale Price (per item) <button type="button" class="help-btn" onclick="alert('The best price for B2B bulk buyers.')">?</button></label>
-                                        <input type="number" id="wholesale-price" placeholder="AI Suggestion..." class="form-input" disabled>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="wholesale-moq" class="form-label">Wholesale MOQ <button type="button" class="help-btn" onclick="alert('The minimum items a single business buyer must purchase for this price.')">?</button></label>
-                                        <input type="number" id="wholesale-moq" placeholder="e.g., 50" class="form-input" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg">
-                        <button type="button" class="accordion-header w-full flex justify-between items-center p-4 cursor-pointer bg-gray-50">
-                            <span class="font-semibold text-lg text-gray-800">Inventory & Policies <span class="text-red-500">*</span></span>
-                            <span class="arrow text-gray-500">▼</span>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 border-t border-gray-200">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                    <div class="form-group">
-                                        <label for="stock" class="form-label">Total Stock Quantity <span class="text-red-500">*</span> <button type="button" class="help-btn" onclick="alert('The total number of units you have available for sale across all tiers.')">?</button></label>
-                                        <input type="number" id="stock" value="200" class="form-input mandatory-field-step3">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="return-policy" class="form-label">Return Policy <span class="text-red-500">*</span> <button type="button" class="help-btn" onclick="alert('Select the return policy that will apply to this specific product.')">?</button></label>
-                                        <select id="return-policy" class="form-input mandatory-field-step3">
-                                            <option value="">-- Select a Policy --</option>
-                                            <option value="damage">Damaged Items Only (within 48 hours)</option>
-                                            <option value="7-day">7-Day Hassle-Free Returns</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
-                        <button id="step3-back-btn" type="button" class="secondary-btn">&larr; Back to Details</button>
-                        <button id="step3-next-btn" type="button" class="main-btn" disabled>Next: Logistics &rarr;</button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="step-4" class="hidden">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Step 4: Logistics Information</h2>
-                    <p class="text-gray-600 mt-2">Provide details for shipping and delivery.</p>
-                </div>
-                
-                <form class="mt-8 flex flex-col space-y-6" id="logistics-form">
-                    <div class="border border-gray-200 rounded-lg">
-                        <button type="button" class="accordion-header active w-full flex justify-between items-center p-4 cursor-pointer bg-gray-50">
-                            <span class="font-semibold text-lg text-gray-800">Shipping Details <span class="text-red-500">*</span></span>
-                            <span class="arrow text-gray-500">▼</span>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 border-t border-gray-200">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
-                                    <div class="form-group">
-                                        <label for="weight" class="form-label">Weight (grams) <span class="text-red-500">*</span> <button type="button" class="help-btn" onclick="alert('Enter the weight of the product in grams. This will be used to calculate shipping costs.')">?</button></label>
-                                        <input type="number" id="weight" value="" class="form-input mandatory-field-step4" placeholder="e.g., 500">
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="dimensions-label-group"> 
-                                            <label class="form-label" for="length">Dimensions <span class="text-red-500">*</span></label>
-                                            <select id="dimensions-unit-toggle" class="unit-toggle-select">
-                                                <option value="cm">cm</option>
-                                                <option value="inches">inches</option>
-                                            </select>
-                                            <button type="button" class="help-btn" onclick="alert('Enter the length, width, and height of the product in centimeters/inches.')">?</button>
-                                        </div>
-                                        <div class="flex gap-2 mt-1 dimensions-input-group"> 
-                                            <input type="number" id="length" value="" class="form-input mandatory-field-step4" placeholder="Length">
-                                            <input type="number" id="width" value="" class="form-input mandatory-field-step4" placeholder="Width">
-                                            <input type="number" id="height" value="" class="form-input mandatory-field-step4" placeholder="Height">
+                                <div>
+                                    <label class="font-medium" for="features">Key Features (1 per line)</label>
+                                    <div class="voice-input-container mt-1">
+                                        <textarea id="features" rows="3" required class="form-input" placeholder="Feature 1&#10;Feature 2&#10;Feature 3"></textarea>
+                                        <div class="voice-input-icon" onclick="alert('Voice-to-Text feature will be activated here!')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-gray-200 rounded-lg">
-                        <button type="button" class="accordion-header w-full flex justify-between items-center p-4 cursor-pointer bg-gray-50">
-                            <span class="font-semibold text-lg text-gray-800">Delivery Information <span class="text-red-500">*</span></span>
-                            <span class="arrow text-gray-500">▼</span>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 border-t border-gray-200">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 items-center"> 
-                                    <div class="form-group">
-                                        <label for="shipping-region" class="form-label">Shipping Region <span class="text-red-500">*</span> <button type="button" class="help-btn" onclick="alert('Select the primary region(s) you ship this product to.')">?</button></label>
-                                        <select id="shipping-region" class="form-input mandatory-field-step4">
-                                            <option value="">-- Select Region --</option>
-                                            <option value="domestic">Domestic (India Only)</option>
-                                            <option value="asia">Asia</option>
-                                            <option value="worldwide">Worldwide</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="delivery-time" class="form-label">Estimated Delivery Time (days) <span class="text-red-500">*</span> <button type="button" class="help-btn" onclick="alert('Provide an estimated delivery time in business days.')">?</button></label>
-                                        <input type="number" id="delivery-time" value="" class="form-input mandatory-field-step4" placeholder="e.g., 5-7">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div><label class="font-medium" for="size-variants">Size Variants? (comma-separated)</label><input type="text" id="size-variants" class="form-input mt-1" placeholder="e.g., Small, Medium, Large"></div>
+                                    <div><label class="font-medium" for="keywords">Search Keywords (comma-separated)</label><input type="text" id="keywords" required class="form-input mt-1" placeholder="e.g., wooden tray, serving platter"></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div><label class="font-medium" for="material">Material</label><input type="text" id="material" required class="form-input mt-1" placeholder="e.g., Mango Wood"></div>
+                                    <div><label class="font-medium" for="color">Color Variant</label><input type="text" id="color" required class="form-input mt-1" placeholder="e.g., Natural Brown"></div>
+                                    <div>
+                                        <label class="font-medium flex items-center" for="hsn-code">HSN Code 
+                                            <div class="tooltip ml-2">
+                                                <span class="bg-gray-200 text-gray-600 rounded-full h-4 w-4 flex items-center justify-center text-xs font-bold">?</span>
+                                                <span class="tooltiptext">HSN code is a 6-digit code for classifying goods for GST purposes. If unsure, search online for your product category.</span>
+                                            </div>
+                                        </label>
+                                        <input type="text" id="hsn-code" required class="form-input mt-1" placeholder="6 or 8-digit code">
                                     </div>
                                 </div>
-                            </div>
+                                <div class="mt-8 pt-6 border-t flex justify-between"><button type="button" id="wizard-step3-back" class="bg-gray-200 hover:bg-gray-300 font-semibold py-2 px-5 rounded-lg">← Back</button><button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-5 rounded-lg shadow">Next →</button></div>
+                            </form>
                         </div>
-                    </div>
 
-                    <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
-                        <button id="step4-back-btn" type="button" class="secondary-btn">&larr; Back to Pricing</button>
-                        <button id="step4-next-btn" type="button" class="main-btn" disabled>Next: Review &rarr;</button>
-                    </div>
-                </form>
-            </div>
-
-            <div id="step-5" class="hidden">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Step 5: Review Your Listing</h2>
-                    <p class="text-gray-600 mt-2">Please review all the details before publishing your product.</p>
-                </div>
-
-                <div class="space-y-6 pt-6 border-t border-gray-200">
-                    <div class="review-section">
-                        <h3 class="review-section-header">1. Product Identity & Images</h3>
-                        <div class="review-item">
-                            <span class="review-label">Product Images:</span>
-                            <div id="review-images" class="review-value image-list">
+                        <div id="wizard-step-4-content" class="hidden">
+                             <h2 class="text-3xl font-bold text-center mb-2">Pricing & Policies</h2><p class="text-center text-gray-600 mb-8">Set your price, stock, and policies.</p>
+                             <form id="pricingForm" class="space-y-6">
+                                <div class="border p-4 rounded-lg bg-yellow-50">
+                                    <h3 class="font-semibold text-lg mb-4">Individual Pricing *</h3>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                                        <div><label class="font-medium" for="mrp">MRP (₹)</label><input type="number" id="mrp" required class="form-input mt-1" placeholder="e.g., 2999"></div>
+                                        <div><label class="font-medium" for="sellingPrice">Your Selling Price (₹)</label><input type="number" id="sellingPrice" required class="form-input mt-1" placeholder="e.g., 1499"></div>
+                                    </div>
+                                    <div class="mrp-example mt-2" id="mrp-example-text"></div>
+                                    <div class="ai-suggestion-box">
+                                        <span class="text-2xl mr-3">💡</span>
+                                        <div><p class="font-semibold text-green-800">AI Price Suggestion</p><p class="text-sm text-green-700">To be competitive, we suggest a price around **₹1499**.</p></div>
+                                    </div>
                                 </div>
+                                <details id="group-buy-details" class="space-y-4">
+                                    <summary>Group Buy Pricing (Optional)<span class="arrow">▼</span></summary>
+                                    <div class="details-content space-y-4">
+                                        <label class="flex items-center"><input type="checkbox" id="enable-group-buy" class="h-4 w-4 rounded"><span class="ml-2">Enable Group Buy for this product</span></label>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div><label class="font-medium" for="group-buy-price">Group Buy Price (per item)</label><input type="number" id="group-buy-price" class="form-input mt-1" placeholder="e.g. 1299"></div>
+                                            <div><label class="font-medium" for="group-buy-moq">Group Buy MOQ</label><input type="number" id="group-buy-moq" class="form-input mt-1" placeholder="e.g., 5"></div>
+                                        </div>
+                                    </div>
+                                </details>
+                                <details id="wholesale-details" class="space-y-4">
+                                    <summary>Wholesale Pricing (Optional)<span class="arrow">▼</span></summary>
+                                    <div class="details-content space-y-4">
+                                        <label class="flex items-center"><input type="checkbox" id="enable-wholesale" class="h-4 w-4 rounded"><span class="ml-2">Enable Wholesale for this product</span></label>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div><label class="font-medium" for="wholesale-price">Wholesale Price (per item)</label><input type="number" id="wholesale-price" class="form-input mt-1" placeholder="e.g. 999"></div>
+                                            <div><label class="font-medium" for="wholesale-moq">Wholesale MOQ</label><input type="number" id="wholesale-moq" class="form-input mt-1" placeholder="e.g., 20"></div>
+                                        </div>
+                                    </div>
+                                </details>
+                                <details id="inventory-details" class="space-y-4" open>
+                                    <summary>Inventory & Policies *<span class="arrow">▼</span></summary>
+                                    <div class="details-content space-y-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div><label class="font-medium" for="product-weight">Product Weight (in KG) <span class="text-red-500">*</span></label><input type="number" id="product-weight" required class="form-input mt-1" placeholder="e.g., 1.6"></div>
+                                            <div><label class="font-medium" for="package-weight">Package Weight (in KG)</label><input type="number" id="package-weight" class="form-input mt-1" placeholder="Optional, e.g., 1.8"></div>
+                                        </div>
+                                        <div>
+                                            <label class="font-medium flex items-center" for="package-dimensions-length">Package Dimensions <span class="text-red-500">*</span>
+                                                <div class="tooltip ml-2">
+                                                    <span class="bg-gray-200 text-gray-600 rounded-full h-4 w-4 flex items-center justify-center text-xs font-bold">?</span>
+                                                    <span class="tooltiptext">Provide the dimensions of the package. This is used to calculate shipping costs.</span>
+                                                </div>
+                                            </label>
+                                            <div class="mt-1 grid grid-cols-3 gap-4">
+                                                <input type="number" id="package-dimensions-length" required class="form-input" placeholder="Length (L)">
+                                                <input type="number" id="package-dimensions-breadth" required class="form-input" placeholder="Breadth (B)">
+                                                <input type="number" id="package-dimensions-height" required class="form-input" placeholder="Height (H)">
+                                            </div>
+                                            <div class="mt-1 flex justify-end">
+                                                <select id="package-dimensions-unit" class="form-input w-20 bg-white"><option>cm</option></select>
+                                            </div>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div><label class="font-medium" for="stock">Total Stock Quantity *</label><input type="number" id="stock" required class="form-input mt-1" placeholder="e.g., 100"></div>
+                                            <div>
+                                                <label class="font-medium" for="return-policy">Return Policy *</label>
+                                                <select id="return-policy" required class="form-input mt-1 bg-white">
+                                                    <option value="" disabled selected>Select a policy</option>
+                                                    <option value="non-returnable">Non-Returnable</option>
+                                                    <option value="7-day-defect-only">7-Day Return (Defects Only)</option>
+                                                    <option value="10-day-exchange">10-Day Exchange</option>
+                                                    <option value="15-day-full-refund">15-Day Full Refund</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                                <div class="mt-8 pt-6 border-t flex justify-between"><button type="button" id="wizard-step4-back" class="bg-gray-200 hover:bg-gray-300 font-semibold py-2 px-5 rounded-lg">← Back</button><button type="submit" class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-2 px-5 rounded-lg shadow">Next →</button></div>
+                            </form>
+                        </div>
+                        
+                        <div id="wizard-step-5-content" class="hidden">
+                             <h2 class="text-3xl font-bold text-center mb-2">Review & Submit</h2><p class="text-center text-gray-600 mb-8">Please review all details before submitting your product.</p>
+                             <div class="space-y-6">
+                                <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Product Images</h3><div id="review-images" class="grid grid-cols-4 gap-4"></div></div>
+                                <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Product Details</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm"><div><span class="review-label">Title:</span> <span id="review-title" class="review-value"></span></div><div><span class="review-label">Category:</span> <span id="review-category" class="review-value"></span></div><div><span class="review-label">Material:</span> <span id="review-material" class="review-value"></span></div><div><span class="review-label">Color:</span> <span id="review-color" class="review-value"></span></div><div><span class="review-label">HSN Code:</span> <span id="review-hsn-code" class="review-value"></span></div><div><span class="review-label">Size Variants:</span> <span id="review-size-variants" class="review-value"></span></div></div><div class="mt-2"><span class="review-label">Keywords:</span> <span id="review-keywords" class="review-value text-sm"></span></div><div class="mt-2"><span class="review-label">Key Features:</span><ul id="review-features" class="list-disc list-inside review-value text-sm"></ul></div></div>
+                                <div class="review-section"><h3 class="text-lg font-semibold border-b pb-2 mb-3">Pricing & Policies</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+                                    <div><span class="review-label">MRP:</span> <span id="review-mrp" class="review-value"></span></div>
+                                    <div><span class="review-label">Selling Price:</span> <span id="review-selling-price" class="review-value font-bold text-green-600"></span></div>
+                                    <div><span class="review-label">Product Weight:</span> <span id="review-product-weight" class="review-value"></span></div>
+                                    <div><span class="review-label">Package Weight:</span> <span id="review-package-weight" class="review-value"></span></div>
+                                    <div><span class="review-label">Dimensions:</span> <span id="review-package-dimensions" class="review-value"></span></div>
+                                    <div><span class="review-label">Stock:</span> <span id="review-stock" class="review-value"></span></div>
+                                    <div><span class="review-label">Return Policy:</span> <span id="review-return-policy" class="review-value"></span></div>
+                                    <div id="review-group-buy-container" class="hidden"><span class="review-label">Group Buy Price:</span> <span id="review-group-buy-price" class="review-value"></span></div>
+                                    <div id="review-wholesale-container" class="hidden"><span class="review-label">Wholesale Price:</span> <span id="review-wholesale-price" class="review-value"></span></div>
+                                </div></div>
+                            </div>
+                             <div class="mt-8 pt-6 border-t flex justify-between"><button type="button" id="wizard-step5-back" class="bg-gray-200 hover:bg-gray-300 font-semibold py-2 px-5 rounded-lg">← Back</button><button type="button" id="wizard-submit-btn" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-5 rounded-lg shadow">Submit Listing ✅</button></div>
+                        </div>
+                    </div>
+                    
+                    <div id="wizard-step-6-success" class="hidden">
+                        <div class="text-center py-12">
+                            <h2 class="text-4xl font-bold text-green-600 mb-4">Shabaash!</h2>
+                            <p class="text-xl text-gray-700 mb-2">Aapka product safaltapoorvak list ho gaya hai.</p>
+                            <p class="text-gray-500 mb-8">Verification ke baad yeh buyers ko dikhne lagega.</p>
+                            <div class="p-4 bg-yellow-100 rounded-lg">
+                                <h3 class="font-bold text-yellow-800">Your First Badge Unlocked! 🏅</h3>
+                                <p class="text-sm text-yellow-700">"Pehli Udaan" badge aapke profile mein add ho gaya hai.</p>
+                            </div>
+                            <div class="mt-8 flex justify-center gap-4">
+                                <button class="bg-gray-800 hover:bg-black text-white font-semibold py-2 px-5 rounded-lg">List Another Product</button>
+                                <button class="bg-gray-200 hover:bg-gray-300 font-semibold py-2 px-5 rounded-lg">Go to Dashboard</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="review-section">
-                        <h3 class="review-section-header">2. Product Details & Categorization</h3>
-                        <div class="review-item">
-                            <span class="review-label">Product Title:</span>
-                            <span id="review-title" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Description:</span>
-                            <span id="review-description" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Features:</span>
-                            <ul id="review-features" class="review-value review-features-list"></ul>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Keywords:</span>
-                            <span id="review-keywords" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Category:</span>
-                            <span id="review-category" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">HSN Code:</span>
-                            <span id="review-hsn-code" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Material:</span>
-                            <span id="review-material" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Color:</span>
-                            <span id="review-color" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Size:</span>
-                            <span id="review-size" class="review-value"></span>
-                        </div>
-                    </div>
-
-                    <div class="review-section">
-                        <h3 class="review-section-header">3. Pricing & Inventory</h3>
-                        <div class="review-item">
-                            <span class="review-label">MRP:</span>
-                            <span id="review-mrp" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Selling Price:</span>
-                            <span id="review-selling-price" class="review-value"></span>
-                        </div>
-                        <div id="review-group-buy-details" class="review-subsection hidden">
-                            <div class="review-item">
-                                <span class="review-label">Group Buy Enabled:</span>
-                                <span class="review-value">Yes</span>
-                            </div>
-                            <div class="review-item">
-                                <span class="review-label">Group Price:</span>
-                                <span id="review-group-price" class="review-value"></span>
-                            </div>
-                            <div class="review-item">
-                                <span class="review-label">Group MOQ:</span>
-                                <span id="review-group-moq" class="review-value"></span>
-                            </div>
-                        </div>
-                        <div id="review-wholesale-details" class="review-subsection hidden">
-                            <div class="review-item">
-                                <span class="review-label">Wholesale Enabled:</span>
-                                <span class="review-value">Yes</span>
-                            </div>
-                            <div class="review-item">
-                                <span class="review-label">Wholesale Price:</span>
-                                <span id="review-wholesale-price" class="review-value"></span>
-                            </div>
-                            <div class="review-item">
-                                <span class="review-label">Wholesale MOQ:</span>
-                                <span id="review-wholesale-moq" class="review-value"></span>
-                            </div>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Total Stock:</span>
-                            <span id="review-stock" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Return Policy:</span>
-                            <span id="review-return-policy" class="review-value"></span>
-                        </div>
-                    </div>
-
-                    <div class="review-section">
-                        <h3 class="review-section-header">4. Logistics Information</h3>
-                        <div class="review-item">
-                            <span class="review-label">Weight:</span>
-                            <span id="review-weight" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Dimensions:</span>
-                            <span id="review-dimensions" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Shipping Region:</span>
-                            <span id="review-shipping-region" class="review-value"></span>
-                        </div>
-                        <div class="review-item">
-                            <span class="review-label">Delivery Time:</span>
-                            <span id="review-delivery-time" class="review-value"></span>
-                        </div>
-                    </div>
                 </div>
-
-                <div class="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
-                    <button id="step5-back-btn" type="button" class="secondary-btn">&larr; Back to Logistics</button>
-                    <button id="step5-submit-btn" type="button" class="main-btn">Submit Listing</button>
-                </div>
-            </div>
-
+             </div>
         </div>
     </div>
-
-    <div id="upload-choice-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 shadow-xl w-full max-w-sm mx-auto">
-            <h3 class="text-xl font-semibold mb-4 text-gray-900">Add an Image</h3>
-            <button id="take-photo-btn" class="main-btn w-full mb-3 py-2">Take Photo with Camera</button>
-            <button id="upload-gallery-btn" class="secondary-btn w-full py-2">Upload from Gallery</button>
-            <button id="close-modal-btn" class="mt-4 text-gray-600 hover:text-gray-900 text-sm">Cancel</button>
-        </div>
-    </div>
-
     <script>
-        // Global State (to carry data between steps)
-        const productData = {
-            images: new Array(4).fill(null), // For Step 1
-            title: '', description: '', features: '', keywords: '', // For Step 2
-            category: '', hsnCode: '', material: '', color: '', customColor: '', size: '', // For Step 2 (HSN added)
-            mrp: '', sellingPrice: '', enableGroupBuy: false, groupPrice: '', groupMoq: '', // For Step 3
-            enableWholesale: false, wholesalePrice: '', wholesaleMoq: '', stock: '', returnPolicy: '', // For Step 3
-            weight: '', length: '', width: '', height: '', dimensionsUnit: 'cm', shippingRegion: '', deliveryTime: '' // For Step 4
-        };
-
-        // --- Navigation Logic ---
-        let currentStep = 1;
-        const totalSteps = 5; 
-
-        function showStep(stepNum) {
-            // Hide all step divs explicitly
-            document.getElementById('step-1').classList.add('hidden');
-            document.getElementById('step-2').classList.add('hidden');
-            document.getElementById('step-3').classList.add('hidden');
-            document.getElementById('step-4').classList.add('hidden'); 
-            document.getElementById('step-5').classList.add('hidden'); 
-
-            // Show the requested step div
-            const targetStepElement = document.getElementById(`step-${stepNum}`);
-            if (targetStepElement) {
-                targetStepElement.classList.remove('hidden');
-            } else {
-                console.error(`Error: Step ${stepNum} element not found.`);
-                return; 
-            }
-            
-            updateProgressBar(stepNum);
-            currentStep = stepNum;
-
-            // Specific actions when showing a step
-            if (stepNum === 1) {
-                renderSlots(); 
-                validateStep1(); 
-            }
-            if (stepNum === 2) {
-                updateStep2Image();
-                populateStep2Fields(); 
-                validateStep2(); 
-            }
-            if (stepNum === 3) {
-                populateStep3Fields(); 
-                setupAccordions(); 
-                updatePricingExampleDisplay(); 
-                validateStep3();
-            }
-            if (stepNum === 4) { 
-                populateStep4Fields();
-                setupAccordions(); 
-                setupDimensionsToggle(); 
-                validateStep4();
-            }
-            if (stepNum === 5) { 
-                populateStep5Fields(); 
-            }
+        function triggerConfetti() {
+            confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
         }
 
-        function updateProgressBar(activeStep) {
-            for (let i = 1; i <= totalSteps; i++) {
-                const stepElement = document.getElementById(`progressStep${i}`);
-                const circle = stepElement.querySelector('.progress-circle'); 
-                const label = stepElement.querySelector('.progress-label'); 
-                const line = document.getElementById(`progressLine${i-1}`); 
+        // Ye function backend se aayi listing text ko parse karega
+        function parseListingText(text) {
+            const details = {};
+            const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
-                stepElement.classList.remove('active', 'completed'); 
-                circle.classList.remove('bg-yellow-400', 'text-black', 'bg-gray-200');
-                
-                if (line) { 
-                    line.classList.remove('completed'); 
-                }
+            let currentFeatureBuffer = [];
+            let inFeaturesSection = false;
 
-                if (i < activeStep) {
-                    stepElement.classList.add('completed'); 
-                    circle.classList.add('bg-yellow-400', 'text-black');
-                    circle.innerHTML = '✔'; 
-                    if (line) line.classList.add('completed');
-                } else if (i === activeStep) {
-                    stepElement.classList.add('active'); 
-                    circle.classList.add('bg-yellow-400', 'text-black');
-                    circle.innerHTML = i;
-                    if (line) line.classList.add('completed'); 
-                } else {
-                    circle.classList.add('bg-gray-200');
-                    circle.innerHTML = i;
-                }
-            }
-        }
-
-
-        // --- Step 1 Logic (Image Upload) ---
-        const fileInput = document.getElementById('file-upload');
-        const slotsContainer = document.getElementById('image-upload-slots');
-        const uploadChoiceModal = document.getElementById('upload-choice-modal'); 
-        const step1NextBtn = document.getElementById('step1-next-btn');
-        const statusMessage = document.getElementById('upload-status-message');
-        const NUM_FILES = 4;
-        let activeImageSlot = 0; 
-
-        function renderSlots() {
-            slotsContainer.innerHTML = '';
-            for (let i = 0; i < NUM_FILES; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'upload-slot'; 
-                
-                if (productData.images[i]) {
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(productData.images[i]); // Corrected: Using productData.images
-                    img.alt = `Product Image ${i + 1}`; 
-                    slot.appendChild(img);
-                    const removeBtn = document.createElement('button');
-                    removeBtn.innerHTML = '&times;';
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.onclick = (e) => { 
-                        e.stopPropagation(); 
-                        URL.revokeObjectURL(img.src); 
-                        productData.images[i] = null; 
-                        renderSlots(); 
-                        validateStep1(); 
-                    };
-                    slot.appendChild(removeBtn);
-
-                    if (i === 0) {
-                        const mainLabel = document.createElement('span');
-                        mainLabel.className = 'main-image-label';
-                        mainLabel.textContent = 'Main Pic'; 
-                        slot.appendChild(mainLabel);
+            for (const line of lines) {
+                if (line.startsWith("Title:")) {
+                    details.title = line.replace("Title:", "").trim();
+                    inFeaturesSection = false;
+                } else if (line.startsWith("Material:")) {
+                    details.material = line.replace("Material:", "").trim();
+                    inFeaturesSection = false;
+                } else if (line.startsWith("Color:")) {
+                    details.color = line.replace("Color:", "").trim();
+                    inFeaturesSection = false;
+                } else if (line.startsWith("Features:")) {
+                    inFeaturesSection = true; // Ab features section mein enter ho gaye
+                } else if (line.startsWith("SEO Keywords:")) {
+                    details.keywords = line.replace("SEO Keywords:", "").trim();
+                    inFeaturesSection = false; // Features section se bahar
+                    if (currentFeatureBuffer.length > 0) {
+                        details.features = currentFeatureBuffer.join('\n');
+                        currentFeatureBuffer = []; // Reset for next use if any
                     }
-
-                } else {
-                    const emptyContentDiv = document.createElement('div');
-                    emptyContentDiv.className = 'empty-slot-content';
-                    emptyContentDiv.innerHTML = `<span class="text-4xl">+</span><span class="block text-xs mt-1">${i === 0 ? 'Main Image' : `Image ${i + 1}`}</span>`;
-                    slot.appendChild(emptyContentDiv);
-                }
-                
-                slot.onclick = () => { 
-                    if (!productData.images[i]) { 
-                        activeImageSlot = i; 
-                        uploadChoiceModal.classList.remove('hidden'); 
-                    }
-                };
-                slotsContainer.appendChild(slot);
-            }
-        }
-
-        function validateStep1() {
-            const filledSlots = productData.images.filter(f => f !== null).length;
-            step1NextBtn.disabled = filledSlots < NUM_FILES;
-            
-            if (filledSlots < NUM_FILES) {
-                const remaining = NUM_FILES - filledSlots;
-                statusMessage.textContent = `Please upload ${remaining} more image${remaining > 1 ? 's' : ''}.`; 
-                statusMessage.style.color = '#EF4444'; 
-            } else {
-                statusMessage.textContent = 'All images uploaded. You can now continue.';
-                statusMessage.style.color = '#16A34A'; 
-            }
-        }
-        
-        fileInput.addEventListener('change', (event) => {
-            const selectedFiles = event.target.files;
-            let currentFileIndex = 0; 
-
-            let startFillingIndex = productData.images[activeImageSlot] === null ? activeImageSlot : productData.images.findIndex(file => file === null);
-            if (startFillingIndex === -1 && selectedFiles.length > 0) { 
-                alert("All image slots are full. Please remove existing images to upload new ones.");
-                fileInput.value = ""; 
-                return;
-            }
-
-            while (currentFileIndex < selectedFiles.length && startFillingIndex < NUM_FILES) {
-                while (startFillingIndex < NUM_FILES && productData.images[startFillingIndex] !== null) {
-                    startFillingIndex++;
-                }
-
-                if (startFillingIndex < NUM_FILES) { 
-                    productData.images[startFillingIndex] = selectedFiles[currentFileIndex];
-                    currentFileIndex++;
-                } else { 
-                    break;
+                } else if (line.startsWith("HSN Code:")) {
+                    details.hsnCode = line.replace("HSN Code:", "").trim();
+                    inFeaturesSection = false; // Features section se bahar
+                } else if (inFeaturesSection && line.startsWith("- ")) {
+                    currentFeatureBuffer.push(line.replace("- ", "").trim());
+                } else if (inFeaturesSection && line.length > 0) { // Agar koi line bullet point nahi hai but features section mein hai
+                     currentFeatureBuffer.push(line);
                 }
             }
-
-            renderSlots();
-            validateStep1();
-            fileInput.value = ""; 
-        });
-        
-        document.getElementById('close-modal-btn').addEventListener('click', () => uploadChoiceModal.classList.add('hidden'));
-        document.getElementById('take-photo-btn').addEventListener('click', () => {
-            uploadChoiceModal.classList.add('hidden');
-            alert("This would open the device camera in the real application.");
-        });
-        document.getElementById('upload-gallery-btn').addEventListener('click', () => {
-            uploadChoiceModal.classList.add('hidden');
-            fileInput.click(); 
-        });
-
-        step1NextBtn.addEventListener('click', () => {
-            showStep(2);
-        });
-
-
-        // --- Step 2 Logic (Details & Categorization) ---
-        const colorSelect = document.getElementById('color-select');
-        const customColorInput = document.getElementById('custom-color-input');
-        const sizeSelect = document.getElementById('size');
-        const hsnCodeInput = document.getElementById('hsn-code'); // Get HSN Code input
-
-        const mandatoryFieldsStep2 = document.querySelectorAll('.mandatory-field-step2');
-        const step2NextBtn = document.getElementById('step2-next-btn');
-        const step2BackBtn = document.getElementById('step2-back-btn');
-        
-        function updateStep2Image() {
-            if (productData.images[0]) {
-                document.getElementById('step2-main-image').src = URL.createObjectURL(productData.images[0]);
+            // Loop khatam hone ke baad, agar features collect huye hain aur abhi tak set nahi huye
+            if (currentFeatureBuffer.length > 0 && !details.features) {
+                details.features = currentFeatureBuffer.join('\n');
             }
+            return details;
         }
 
-        function populateStep2Fields() {
-            document.getElementById('title').value = productData.title || "Handcrafted Wooden Serving Tray";
-            document.getElementById('description').value = productData.description || "A beautifully hand-painted wooden tray, perfect for serving guests or as a decorative piece. Made from sustainable Sheesham wood with intricate mosaic work.";
-            document.getElementById('features').value = productData.features || "Handmade mosaic design\nDurable Sheesham wood\nPerfect for serving and display\nEasy to clean";
-            document.getElementById('keywords').value = productData.keywords || "wooden serving tray, mosaic tray, gift set, kitchenware, home decor";
-            
-            const categorySelect = document.getElementById('category');
-            categorySelect.value = productData.category || ""; 
-
-            hsnCodeInput.value = productData.hsnCode || ""; // Populate HSN Code
-
-            document.getElementById('material').value = productData.material || "Sheesham Wood";
-            
-            if (productData.color) {
-                colorSelect.value = productData.color;
-                if (productData.color === 'custom') { 
-                    customColorInput.classList.remove('hidden');
-                    customColorInput.value = productData.customColor || '';
-                } else {
-                    customColorInput.classList.add('hidden');
-                }
-            } else {
-                colorSelect.value = ""; 
-                customColorInput.classList.add('hidden');
-            }
-
-            sizeSelect.value = productData.size || ""; 
-        }
-
-        function validateStep2() {
-            let allFilled = true;
-            mandatoryFieldsStep2.forEach(field => {
-                if (field.tagName === 'SELECT' && field.value.trim() === '') {
-                    allFilled = false;
-                } 
-                else if (field.tagName !== 'SELECT' && field.value.trim() === '') {
-                    allFilled = false;
-                }
-            });
-            
-            if (colorSelect.value === 'custom' && customColorInput.value.trim() === '') {
-                allFilled = false;
-            }
-            step2NextBtn.disabled = !allFilled;
-        }
-
-        mandatoryFieldsStep2.forEach(field => {
-            field.addEventListener('input', validateStep2);
-            field.addEventListener('change', validateStep2); 
-        });
-        hsnCodeInput.addEventListener('input', validateStep2); // Add HSN Code to validation
-
-        colorSelect.addEventListener('change', () => {
-            if (colorSelect.value === 'custom') {
-                customColorInput.classList.remove('hidden');
-                customColorInput.value = ''; 
-                customColorInput.focus();
-            } else {
-                customColorInput.classList.add('hidden');
-            }
-            validateStep2();
-        });
-        customColorInput.addEventListener('input', validateStep2); 
-
-        sizeSelect.addEventListener('change', validateStep2);
-
-        step2NextBtn.addEventListener('click', () => {
-            productData.title = document.getElementById('title').value;
-            productData.description = document.getElementById('description').value;
-            productData.features = document.getElementById('features').value;
-            productData.keywords = document.getElementById('keywords').value;
-            productData.category = document.getElementById('category').value;
-            productData.hsnCode = hsnCodeInput.value; // Save HSN Code
-            productData.material = document.getElementById('material').value;
-            
-            if (colorSelect.value === 'custom') {
-                productData.color = colorSelect.value; 
-                productData.customColor = customColorInput.value; 
-            } else {
-                productData.color = colorSelect.value;
-                productData.customColor = ''; 
-            }
-            
-            productData.size = sizeSelect.value; 
-
-            showStep(3); 
-        });
-
-        step2BackBtn.addEventListener('click', () => showStep(1));
-
-
-        // --- Step 3 Logic (Pricing, Inventory & Policies) ---
-        const mrpInput = document.getElementById('mrp'); 
-        const sellingPriceInput = document.getElementById('selling-price');
-        const groupBuyToggle = document.getElementById('enable-group-buy');
-        const groupBuyPriceInput = document.getElementById('group-price');
-        const groupMoqInput = document.getElementById('group-moq'); 
-        const wholesaleToggle = document.getElementById('enable-wholesale');
-        const wholesalePriceInput = document.getElementById('wholesale-price');
-        const wholesaleMoqInput = document.getElementById('wholesale-moq'); 
-        const mandatoryFieldsStep3 = document.querySelectorAll('.mandatory-field-step3');
-        const step3NextBtn = document.getElementById('step3-next-btn');
-        const step3BackBtn = document.getElementById('step3-back-btn');
-
-        const displayedMrpExample = document.getElementById('displayed-mrp-example');
-        const displayedSellingPriceExample = document.getElementById('displayed-selling-price-example');
-
-        function setupAccordions() {
-            const currentStepElement = document.getElementById(`step-${currentStep}`);
-            if (!currentStepElement) return;
-
-            const currentStepAccordions = currentStepElement.querySelectorAll('.accordion-header');
-
-            currentStepAccordions.forEach(accordion => {
-                accordion.removeEventListener('click', toggleAccordion); 
-                accordion.addEventListener('click', toggleAccordion); 
-            });
-
-            if (currentStepAccordions.length > 0) {
-                const firstAccordionOfCurrentStep = currentStepAccordions[0];
-                if (!firstAccordionOfCurrentStep.classList.contains('active')) {
-                    firstAccordionOfCurrentStep.click(); 
-                }
-            }
-        }
-
-        function toggleAccordion(event) {
-            const accordion = event.currentTarget;
-            const content = accordion.nextElementSibling;
-            const arrow = accordion.querySelector('.arrow');
-
-            const parentContainer = accordion.closest('form'); 
-            
-            if (content.style.maxHeight) { 
-                content.style.maxHeight = null;
-                accordion.classList.remove('active');
-                if(arrow) arrow.style.transform = 'rotate(0deg)';
-            } else {
-                if (parentContainer) {
-                    parentContainer.querySelectorAll('.accordion-header.active').forEach(openAccordionHeader => {
-                        const openContent = openAccordionHeader.nextElementSibling;
-                        if (openContent && openContent !== content) {
-                            openContent.style.maxHeight = null;
-                            openAccordionHeader.classList.remove('active');
-                            const openArrow = openAccordionHeader.querySelector('.arrow');
-                            if (openArrow) openArrow.style.transform = 'rotate(0deg)';
-                        }
-                    });
-                }
-                content.style.maxHeight = content.scrollHeight + "px"; 
-                accordion.classList.add('active');
-                if(arrow) arrow.style.transform = 'rotate(180deg)';
-            }
-        }
-        
-        groupBuyToggle.addEventListener('change', () => {
-            const isDisabled = !groupBuyToggle.checked;
-            groupBuyPriceInput.disabled = isDisabled;
-            groupMoqInput.disabled = isDisabled;
-            if (isDisabled) {
-                groupBuyPriceInput.value = '';
-                groupMoqInput.value = '';
-            } else {
-                const price = parseFloat(sellingPriceInput.value);
-                if (!isNaN(price) && price > 0) {
-                    groupBuyPriceInput.value = (price * 0.85).toFixed(0);
-                }
-            }
-            validateStep3(); 
-        });
-        wholesaleToggle.addEventListener('change', () => {
-            const isDisabled = !wholesaleToggle.checked;
-            wholesalePriceInput.disabled = isDisabled;
-            wholesaleMoqInput.disabled = isDisabled;
-            if (isDisabled) {
-                wholesalePriceInput.value = '';
-                wholesaleMoqInput.value = '';
-            } else {
-                const price = parseFloat(sellingPriceInput.value);
-                if (!isNaN(price) && price > 0) {
-                    wholesalePriceInput.value = (price * 0.70).toFixed(0);
-                }
-            }
-            validateStep3(); 
-        });
-
-        function updatePricingExampleDisplay() {
-            const mrpValue = mrpInput.value;
-            const sellingPriceValue = sellingPriceInput.value;
-
-            if (mrpValue && !isNaN(parseFloat(mrpValue))) {
-                displayedMrpExample.textContent = `₹${parseFloat(mrpValue).toLocaleString('en-IN')}`;
-            } else {
-                displayedMrpExample.textContent = '₹0'; 
-            }
-
-            if (sellingPriceValue && !isNaN(parseFloat(sellingPriceValue))) {
-                displayedSellingPriceExample.textContent = `₹${parseFloat(sellingPriceValue).toLocaleString('en-IN')}`;
-            } else {
-                displayedSellingPriceExample.textContent = '₹0'; 
-            }
-        }
-
-        mrpInput.addEventListener('input', () => {
-            updatePricingExampleDisplay(); 
-            validateStep3();
-        });
-
-        sellingPriceInput.addEventListener('input', () => {
-            const price = parseFloat(sellingPriceInput.value);
-            if (!isNaN(price) && price > 0) {
-                if(groupBuyToggle.checked) groupBuyPriceInput.value = (price * 0.85).toFixed(0); 
-                if(wholesaleToggle.checked) wholesalePriceInput.value = (price * 0.70).toFixed(0); 
-            } else {
-                if(groupBuyToggle.checked) groupBuyPriceInput.value = '';
-                if(wholesaleToggle.checked) wholesalePriceInput.value = '';
-            }
-            updatePricingExampleDisplay(); 
-            validateStep3();
-        });
-
-        function populateStep3Fields() {
-            mrpInput.value = productData.mrp || "2000"; 
-            sellingPriceInput.value = productData.sellingPrice || "1500"; 
-
-            groupBuyToggle.checked = productData.enableGroupBuy;
-            groupBuyPriceInput.value = productData.groupPrice || '';
-            groupMoqInput.value = productData.groupMoq || '';
-            groupBuyPriceInput.disabled = !groupBuyToggle.checked;
-            groupMoqInput.disabled = !groupBuyToggle.checked; 
-
-            wholesaleToggle.checked = productData.enableWholesale;
-            wholesalePriceInput.value = productData.wholesalePrice || '';
-            wholesaleMoqInput.value = productData.wholesaleMoq || '';
-            wholesalePriceInput.disabled = !wholesaleToggle.checked;
-            wholesaleMoqInput.disabled = !wholesaleToggle.checked;
-            
-            document.getElementById('stock').value = productData.stock || "200";
-            document.getElementById('return-policy').value = productData.returnPolicy || ""; 
-            
-            updatePricingExampleDisplay(); 
-        }
-
-        function validateStep3() {
-            let allFilled = true;
-            mandatoryFieldsStep3.forEach(field => {
-                if (field.tagName === 'SELECT' && field.value.trim() === '') {
-                    allFilled = false;
-                } else if (field.tagName !== 'SELECT' && field.value.trim() === '' && !field.disabled) { 
-                    allFilled = false;
-                } else if (field.type === 'number' && (isNaN(parseFloat(field.value)) || parseFloat(field.value) <= 0) && !field.disabled) {
-                    allFilled = false;
-                }
-            });
-            
-            if (groupBuyToggle.checked) {
-                if ((groupBuyPriceInput.value.trim() === '' || isNaN(parseFloat(groupBuyPriceInput.value)) || parseFloat(groupBuyPriceInput.value) <= 0) && !groupBuyPriceInput.disabled) allFilled = false;
-                if ((groupMoqInput.value.trim() === '' || isNaN(parseInt(groupMoqInput.value)) || parseInt(groupMoqInput.value) <= 0) && !groupMoqInput.disabled) allFilled = false;
-            }
-            if (wholesaleToggle.checked) {
-                if ((wholesalePriceInput.value.trim() === '' || isNaN(parseFloat(wholesalePriceInput.value)) || parseFloat(wholesalePriceInput.value) <= 0) && !wholesalePriceInput.disabled) allFilled = false;
-                if ((wholesaleMoqInput.value.trim() === '' || isNaN(parseInt(wholesaleMoqInput.value)) || parseInt(wholesaleMoqInput.value) <= 0) && !wholesaleMoqInput.disabled) allFilled = false;
-            }
-
-            step3NextBtn.disabled = !allFilled;
-        }
-
-        document.getElementById('mrp').addEventListener('input', validateStep3);
-        document.getElementById('selling-price').addEventListener('input', validateStep3);
-        document.getElementById('stock').addEventListener('input', validateStep3);
-        document.getElementById('return-policy').addEventListener('change', validateStep3); 
-
-        groupBuyToggle.addEventListener('change', validateStep3);
-        groupBuyPriceInput.addEventListener('input', validateStep3);
-        groupMoqInput.addEventListener('input', validateStep3);
-        
-        wholesaleToggle.addEventListener('change', validateStep3);
-        wholesalePriceInput.addEventListener('input', validateStep3);
-        wholesaleMoqInput.addEventListener('input', validateStep3);
-
-
-        step3NextBtn.addEventListener('click', () => {
-            productData.mrp = document.getElementById('mrp').value;
-            productData.sellingPrice = document.getElementById('selling-price').value;
-            productData.enableGroupBuy = groupBuyToggle.checked;
-            productData.groupPrice = groupBuyToggle.checked ? groupBuyPriceInput.value : '';
-            productData.groupMoq = groupBuyToggle.checked ? groupMoqInput.value : '';
-            productData.enableWholesale = wholesaleToggle.checked;
-            productData.wholesalePrice = wholesaleToggle.checked ? wholesalePriceInput.value : '';
-            productData.wholesaleMoq = wholesaleToggle.checked ? wholesaleMoqInput.value : '';
-            productData.stock = document.getElementById('stock').value;
-            productData.returnPolicy = document.getElementById('return-policy').value;
-
-            showStep(4); 
-        });
-
-        step3BackBtn.addEventListener('click', () => showStep(2));
-
-
-        // --- Step 4 Logic (Logistics Information) ---
-        const weightInput = document.getElementById('weight');
-        const lengthInput = document.getElementById('length');
-        const widthInput = document.getElementById('width');
-        const heightInput = document.getElementById('height');
-        const shippingRegionSelect = document.getElementById('shipping-region');
-        const deliveryTimeInput = document.getElementById('delivery-time');
-        const mandatoryFieldsStep4 = document.querySelectorAll('.mandatory-field-step4');
-        const step4NextBtn = document.getElementById('step4-next-btn');
-        const step4BackBtn = document.getElementById('step4-back-btn');
-        const dimensionsUnitToggle = document.getElementById('dimensions-unit-toggle'); 
-
-        function setupDimensionsToggle() { 
-            dimensionsUnitToggle.removeEventListener('change', handleDimensionsUnitChange); 
-            dimensionsUnitToggle.addEventListener('change', handleDimensionsUnitChange);
-            updateDimensionsPlaceholders(dimensionsUnitToggle.value);
-        }
-
-        function handleDimensionsUnitChange() { 
-            const selectedUnit = dimensionsUnitToggle.value;
-            updateDimensionsPlaceholders(selectedUnit);
-        }
-
-        function updateDimensionsPlaceholders(unit) { 
-            lengthInput.placeholder = `Length (${unit})`;
-            widthInput.placeholder = `Width (${unit})`;
-            heightInput.placeholder = `Height (${unit})`;
-        }
-
-
-        function populateStep4Fields() {
-            weightInput.value = productData.weight;
-            lengthInput.value = productData.length;
-            widthInput.value = productData.width;
-            heightInput.value = productData.height;
-            shippingRegionSelect.value = productData.shippingRegion;
-            deliveryTimeInput.value = productData.deliveryTime;
-            dimensionsUnitToggle.value = productData.dimensionsUnit || 'cm'; 
-            updateDimensionsPlaceholders(dimensionsUnitToggle.value); 
-        }
-
-        function validateStep4() {
-            let allFilled = true;
-            mandatoryFieldsStep4.forEach(field => {
-                if (field.tagName === 'SELECT' && field.value.trim() === '') {
-                    allFilled = false;
-                } else if (field.tagName !== 'SELECT' && field.value.trim() === '') {
-                    allFilled = false;
-                } else if (field.type === 'number' && (isNaN(parseFloat(field.value)) || parseFloat(field.value) <= 0)) {
-                    allFilled = false;
-                }
-            });
-            step4NextBtn.disabled = !allFilled;
-        }
-
-        weightInput.addEventListener('input', validateStep4);
-        lengthInput.addEventListener('input', validateStep4);
-        widthInput.addEventListener('input', validateStep4);
-        heightInput.addEventListener('input', validateStep4);
-        shippingRegionSelect.addEventListener('change', validateStep4);
-        deliveryTimeInput.addEventListener('input', validateStep4);
-
-        step4NextBtn.addEventListener('click', () => {
-            productData.weight = weightInput.value;
-            productData.length = lengthInput.value;
-            productData.width = widthInput.value;
-            productData.height = heightInput.value;
-            productData.shippingRegion = shippingRegionSelect.value;
-            productData.deliveryTime = deliveryTimeInput.value;
-            productData.dimensionsUnit = dimensionsUnitToggle.value; 
-
-            showStep(5); 
-        });
-
-        step4BackBtn.addEventListener('click', () => showStep(3));
-
-        // --- Step 5 Logic (Review) ---
-        const step5BackBtn = document.getElementById('step5-back-btn');
-        const step5SubmitBtn = document.getElementById('step5-submit-btn');
-
-        function populateStep5Fields() {
-            // Section 1: Product Identity & Images
-            const reviewImagesContainer = document.getElementById('review-images');
-            reviewImagesContainer.innerHTML = ''; 
-            if (productData.images && productData.images.length > 0) {
-                productData.images.forEach(imgFile => {
-                    if (imgFile) {
-                        const imgElement = document.createElement('img');
-                        imgElement.src = URL.createObjectURL(imgFile);
-                        imgElement.alt = "Product Image";
-                        imgElement.className = "review-image";
-                        reviewImagesContainer.appendChild(imgElement);
-                    }
-                });
-            } else {
-                reviewImagesContainer.innerHTML = '<span class="text-gray-500">No images uploaded.</span>';
-            }
-
-            // Section 2: Product Details & Categorization
-            document.getElementById('review-title').textContent = productData.title || 'N/A';
-            document.getElementById('review-description').textContent = productData.description || 'N/A';
-            
-            const reviewFeaturesList = document.getElementById('review-features');
-            reviewFeaturesList.innerHTML = '';
-            if (productData.features) {
-                productData.features.split('\n').forEach(feature => {
-                    if (feature.trim()) {
-                        const li = document.createElement('li');
-                        li.textContent = feature.trim();
-                        reviewFeaturesList.appendChild(li);
-                    }
-                });
-            } else {
-                reviewFeaturesList.innerHTML = '<li class="text-gray-500">N/A</li>';
-            }
-
-            document.getElementById('review-keywords').textContent = productData.keywords || 'N/A';
-            document.getElementById('review-category').textContent = productData.category || 'N/A';
-            // NEW: HSN Code for Review
-            document.getElementById('review-hsn-code').textContent = productData.hsnCode || 'N/A';
-            document.getElementById('review-material').textContent = productData.material || 'N/A';
-            
-            let colorText = productData.color;
-            if (productData.color === 'custom' && productData.customColor) {
-                colorText = productData.customColor + ' (Custom)';
-            } else if (!productData.color) {
-                colorText = 'N/A';
-            }
-            document.getElementById('review-color').textContent = colorText;
-
-            document.getElementById('review-size').textContent = productData.size || 'N/A';
-
-            // Section 3: Pricing & Inventory
-            document.getElementById('review-mrp').textContent = productData.mrp ? `₹${parseFloat(productData.mrp).toLocaleString('en-IN')}` : 'N/A';
-            document.getElementById('review-selling-price').textContent = productData.sellingPrice ? `₹${parseFloat(productData.sellingPrice).toLocaleString('en-IN')}` : 'N/A';
-            
-            const reviewGroupBuyDetails = document.getElementById('review-group-buy-details');
-            if (productData.enableGroupBuy) {
-                reviewGroupBuyDetails.classList.remove('hidden');
-                document.getElementById('review-group-price').textContent = productData.groupPrice ? `₹${parseFloat(productData.groupPrice).toLocaleString('en-IN')}` : 'N/A';
-                document.getElementById('review-group-moq').textContent = productData.groupMoq || 'N/A';
-            } else {
-                reviewGroupBuyDetails.classList.add('hidden');
-            }
-
-            const reviewWholesaleDetails = document.getElementById('review-wholesale-details');
-            if (productData.enableWholesale) {
-                reviewWholesaleDetails.classList.remove('hidden');
-                document.getElementById('review-wholesale-price').textContent = productData.wholesalePrice ? `₹${parseFloat(productData.wholesalePrice).toLocaleString('en-IN')}` : 'N/A';
-                document.getElementById('review-wholesale-moq').textContent = productData.wholesaleMoq || 'N/A';
-            } else {
-                reviewWholesaleDetails.classList.add('hidden');
-            }
-
-            document.getElementById('review-stock').textContent = productData.stock || 'N/A';
-            let returnPolicyText = 'N/A';
-            if (productData.returnPolicy === 'damage') {
-                returnPolicyText = 'Damaged Items Only (within 48 hours)';
-            } else if (productData.returnPolicy === '7-day') {
-                returnPolicyText = '7-Day Hassle-Free Returns';
-            }
-            document.getElementById('review-return-policy').textContent = returnPolicyText;
-
-            // Section 4: Logistics Information
-            document.getElementById('review-weight').textContent = productData.weight ? `${productData.weight} grams` : 'N/A';
-            const dimensionsUnit = productData.dimensionsUnit || 'cm';
-            document.getElementById('review-dimensions').textContent = (productData.length && productData.width && productData.height) ? 
-                `${productData.length}${dimensionsUnit} L x ${productData.width}${dimensionsUnit} W x ${productData.height}${dimensionsUnit} H` : 'N/A';
-            document.getElementById('review-shipping-region').textContent = productData.shippingRegion || 'N/A';
-            document.getElementById('review-delivery-time').textContent = productData.deliveryTime ? `${productData.deliveryTime} days` : 'N/A';
-        }
-
-        step5BackBtn.addEventListener('click', () => {
-            showStep(4);
-            // Optionally, release URLs for images if you want to save memory on back navigation
-            // productData.images.forEach(imgFile => {
-            //    if (imgFile) URL.revokeObjectURL(imgFile.src);
-            // });
-        });
-        step5SubmitBtn.addEventListener('click', () => {
-            alert("Congratulations! Your product listing has been submitted.");
-            console.log("Final Product Data:", productData);
-            // After successful submission, redirect to dashboard.html
-            window.location.href = 'success.html'; // Redirect to success page
-        });
-
-        // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('step-1').classList.add('hidden');
-            document.getElementById('step-2').classList.add('hidden');
-            document.getElementById('step-3').classList.add('hidden');
-            document.getElementById('step-4').classList.add('hidden');
-            document.getElementById('step-5').classList.add('hidden'); 
+            // STATE & ELEMENT REFERENCES
+            const appState = { currentView: 'wizard', wizardStep: 1 };
+            const productData = { images: new Array(4).fill(null) };
+            const views = { wizard: document.getElementById('view-product-wizard') };
+            const wizardWrapper = document.getElementById('wizard-steps-wrapper');
+            const successScreen = document.getElementById('wizard-step-6-success');
+            const wizardStepContents = { 1: document.getElementById('wizard-step-1-content'), 2: document.getElementById('wizard-step-2-content'), 3: document.getElementById('wizard-step-3-content'), 4: document.getElementById('wizard-step-4-content'), 5: document.getElementById('wizard-step-5-content') };
+            const wizardFileInput = document.getElementById('file-upload-wizard');
+            const wizardSlotsContainer = document.getElementById('image-upload-slots');
             
-            showStep(1); 
+            const BACKEND_URL = "https://banjara-gpt.onrender.com";
+
+            // RENDER FUNCTION
+            function render() {
+                Object.values(views).forEach(view => view.classList.add('hidden'));
+                if (views[appState.currentView]) views[appState.currentView].classList.remove('hidden');
+                if (appState.currentView === 'wizard' && !successScreen.classList.contains('hidden')) {
+                    wizardWrapper.classList.add('hidden');
+                } else if (appState.currentView === 'wizard') {
+                    wizardWrapper.classList.remove('hidden');
+                    successScreen.classList.add('hidden');
+                    for (let i = 1; i <= 5; i++) {
+                        const stepEl = document.getElementById(`wp-step-${i}`); if (!stepEl) continue;
+                        stepEl.classList.remove('active', 'completed');
+                        const dotEl = stepEl.querySelector('.wizard-progress-dot');
+                        if (i < appState.wizardStep) { stepEl.classList.add('completed'); dotEl.innerHTML = `&#10003;`; } 
+                        else if (i === appState.wizardStep) { stepEl.classList.add('active'); dotEl.textContent = i; } 
+                        else { dotEl.textContent = i; }
+                    }
+                    Object.values(wizardStepContents).forEach(content => content.classList.add('hidden'));
+                    if(wizardStepContents[appState.wizardStep]) wizardStepContents[appState.wizardStep].classList.remove('hidden');
+                }
+            }
+
+            // WIZARD STEP 1: IMAGES
+            const renderWizardSlots = () => {
+                wizardSlotsContainer.innerHTML = '';
+                productData.images.forEach((file, index) => {
+                    const slot = document.createElement('div'); slot.className = 'upload-slot';
+                    if (file) { slot.innerHTML = `<img src="${URL.createObjectURL(file)}">`; } 
+                    else { slot.innerHTML = `<div><span class="text-4xl text-gray-400">+</span><span class="block text-xs mt-1 font-semibold text-gray-500">${index === 0 ? 'Main Image' : `Image ${index + 1}`}</span></div>`; slot.onclick = () => wizardFileInput.click(); }
+                    wizardSlotsContainer.appendChild(slot);
+                });
+                const filledSlots = productData.images.filter(f => f !== null).length;
+                document.getElementById('wizard-step1-next').disabled = filledSlots < 4;
+                document.getElementById('wizard-upload-status').textContent = filledSlots < 4 ? `Please upload ${4 - filledSlots} more image(s).` : '';
+            };
+            wizardFileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files); let filesAdded = 0;
+                for (let i = 0; i < productData.images.length && filesAdded < files.length; i++) { if (productData.images[i] === null) productData.images[i] = files[filesAdded++]; }
+                renderWizardSlots();
+            });
+
+            // Ye function AI polishing step ko handle karega
+            document.getElementById('wizard-step1-next').addEventListener('click', async () => {
+                appState.wizardStep = 2;
+                render();
+
+                document.getElementById('ai-image-loader').style.display = 'block';
+                document.getElementById('ai-image-results').style.display = 'none';
+
+                const mainImageFile = productData.images[0];
+                if (!mainImageFile) {
+                    alert("Please upload at least one image to proceed.");
+                    appState.wizardStep = 1;
+                    render();
+                    return;
+                }
+
+                document.getElementById('image-before').src = URL.createObjectURL(mainImageFile);
+
+                const formData = new FormData();
+                formData.append('file', mainImageFile);
+
+                try {
+                    const response = await fetch(`${BACKEND_URL}/upload-listing-image`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const data = await response.json();
+                    const listingText = data.listing;
+
+                    document.getElementById('image-after').src = URL.createObjectURL(mainImageFile);
+
+                    document.getElementById('ai-image-loader').style.display = 'none';
+                    document.getElementById('ai-image-results').style.display = 'block';
+
+                    const parsedDetails = parseListingText(listingText);
+                    Object.assign(productData, parsedDetails);
+
+                } catch (error) {
+                    console.error("Error during API call or processing:", error);
+                    alert("Product details generate karne mein error aaya. Kripya dobara prayas karein. Details ke liye console dekhein.");
+                    appState.wizardStep = 1;
+                    render();
+                    document.getElementById('ai-image-loader').style.display = 'none';
+                    document.getElementById('ai-image-results').style.display = 'block';
+                }
+            });
+
+            // WIZARD STEP 2: AI POLISH (Approval)
+            document.getElementById('wizard-step2-back').addEventListener('click', () => { appState.wizardStep = 1; render(); });
+            document.getElementById('approve-images-check').addEventListener('change', (e) => { document.getElementById('wizard-step2-next').disabled = !e.target.checked; });
+            document.getElementById('wizard-step2-next').addEventListener('click', () => {
+                 appState.wizardStep = 3;
+                 render();
+
+                 document.getElementById('title').value = productData.title || '';
+                 document.getElementById('category').value = productData.category || '';
+                 document.getElementById('features').value = productData.features || '';
+                 document.getElementById('keywords').value = productData.keywords || '';
+                 document.getElementById('material').value = productData.material || '';
+                 document.getElementById('color').value = productData.color || '';
+                 document.getElementById('hsn-code').value = productData.hsnCode || '';
+                 document.getElementById('size-variants').value = productData.sizeVariants || '';
+            });
+
+            // WIZARD STEP 3: DETAILS
+            document.getElementById('wizard-step3-back').addEventListener('click', () => { appState.wizardStep = 2; render(); });
+            document.getElementById('detailsForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                Object.assign(productData, { title: document.getElementById('title').value, category: document.getElementById('category').value, features: document.getElementById('features').value, keywords: document.getElementById('keywords').value, material: document.getElementById('material').value, color: document.getElementById('color').value, hsnCode: document.getElementById('hsn-code').value, sizeVariants: document.getElementById('size-variants').value });
+                appState.wizardStep = 4; render();
+            });
+
+            // WIZARD STEP 4: PRICING
+            const mrpInput = document.getElementById('mrp'); const sellingPriceInput = document.getElementById('sellingPrice'); const exampleText = document.getElementById('mrp-example-text');
+            function updateMrpExample() { const mrp = mrpInput.value || '0'; const sp = sellingPriceInput.value || '0'; exampleText.innerHTML = `Example: <span class="strike">₹${mrp}</span> <span class="final-price">₹${sp}</span>`; }
+            mrpInput.addEventListener('input', updateMrpExample); sellingPriceInput.addEventListener('input', updateMrpExample);
+            document.getElementById('wizard-step4-back').addEventListener('click', () => { appState.wizardStep = 3; render(); });
+            document.getElementById('pricingForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Naye fields ki values ko yahan capture kiya gaya hai
+                const pricingData = {
+                    mrp: document.getElementById('mrp').value,
+                    sellingPrice: document.getElementById('sellingPrice').value,
+                    productWeight: document.getElementById('product-weight').value, // Naya field
+                    packageWeight: document.getElementById('package-weight').value, // Naya field
+                    packageDimensions: { // Naye fields
+                        length: document.getElementById('package-dimensions-length').value,
+                        breadth: document.getElementById('package-dimensions-breadth').value,
+                        height: document.getElementById('package-dimensions-height').value,
+                        unit: document.getElementById('package-dimensions-unit').value
+                    },
+                    stock: document.getElementById('stock').value,
+                    returnPolicy: document.getElementById('return-policy').value
+                };
+                if (document.getElementById('enable-group-buy').checked) { pricingData.groupBuyPrice = document.getElementById('group-buy-price').value; pricingData.groupBuyMoq = document.getElementById('group-buy-moq').value; }
+                if (document.getElementById('enable-wholesale').checked) { pricingData.wholesalePrice = document.getElementById('wholesale-price').value; pricingData.wholesaleMoq = document.getElementById('wholesale-moq').value; }
+                Object.assign(productData, pricingData);
+                appState.wizardStep = 5;
+                populateReviewPage();
+                render();
+            });
+
+            // WIZARD STEP 5: REVIEW
+            document.getElementById('wizard-step5-back').addEventListener('click', () => { appState.wizardStep = 4; render(); });
+            const wizardSubmitBtn = document.getElementById('wizard-submit-btn');
+            wizardSubmitBtn.addEventListener('click', () => {
+                console.log("Final Product Data:", productData);
+                wizardWrapper.classList.add('hidden');
+                successScreen.classList.remove('hidden');
+                triggerConfetti();
+            });
+            function populateReviewPage() {
+                document.getElementById('review-images').innerHTML = productData.images.map(file => file ? `<img src="${URL.createObjectURL(file)}" class="w-full h-auto rounded-md object-cover">` : '').join('');
+                document.getElementById('review-title').textContent = productData.title; document.getElementById('review-category').textContent = productData.category; document.getElementById('review-material').textContent = productData.material; document.getElementById('review-color').textContent = productData.color; document.getElementById('review-hsn-code').textContent = productData.hsnCode; document.getElementById('review-size-variants').textContent = productData.sizeVariants || 'N/A';
+                const featuresList = document.getElementById('review-features');
+                featuresList.innerHTML = ''; productData.features.split('\n').forEach(feature => { if (feature.trim()) { const li = document.createElement('li'); li.textContent = feature.trim(); featuresList.appendChild(li); } });
+                document.getElementById('review-mrp').textContent = `₹${productData.mrp}`; document.getElementById('review-selling-price').textContent = `₹${productData.sellingPrice}`;
+
+                // Naye fields ki values ko yahan display kiya gaya hai
+                document.getElementById('review-product-weight').textContent = productData.productWeight ? `${productData.productWeight} KG` : 'N/A';
+                document.getElementById('review-package-weight').textContent = productData.packageWeight ? `${productData.packageWeight} KG` : 'N/A';
+                if (productData.packageDimensions && productData.packageDimensions.length && productData.packageDimensions.breadth && productData.packageDimensions.height) {
+                    document.getElementById('review-package-dimensions').textContent = `${productData.packageDimensions.length} x ${productData.packageDimensions.breadth} x ${productData.packageDimensions.height} ${productData.packageDimensions.unit}`;
+                } else {
+                    document.getElementById('review-package-dimensions').textContent = 'N/A';
+                }
+
+                document.getElementById('review-stock').textContent = `${productData.stock} units`;
+                document.getElementById('review-return-policy').textContent = productData.returnPolicy;
+                const groupBuyContainer = document.getElementById('review-group-buy-container');
+                if (productData.groupBuyPrice) { groupBuyContainer.classList.remove('hidden'); document.getElementById('review-group-buy-price').textContent = `₹${productData.groupBuyPrice} (MOQ: ${productData.groupBuyMoq})`; } else { groupBuyContainer.classList.add('hidden'); }
+                const wholesaleContainer = document.getElementById('review-wholesale-container');
+                if (productData.wholesalePrice) { wholesaleContainer.classList.remove('hidden'); document.getElementById('review-wholesale-price').textContent = `₹${productData.wholesalePrice} (MOQ: ${productData.wholesaleMoq})`; } else { wholesaleContainer.classList.add('hidden'); }
+            }
+
+            // INITIALIZER
+            render();
+            renderWizardSlots();
+            updateMrpExample();
         });
     </script>
 </body>
