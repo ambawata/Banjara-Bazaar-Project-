@@ -1,309 +1,322 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard - Banjara Bazaar</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banjara Bazaar - Seller Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* Light gray background */
-            color: #333;
-            margin: 0; /* Remove default body margin */
-            min-height: 100vh; /* Ensure body takes full viewport height */
-            display: flex; /* Make body a flex container to push footer down if added later */
+        body { font-family: 'Inter', sans-serif; }
+        .sidebar-link.active { background-color: #fefce8; color: #ca8a04; border-right: 4px solid #facc15; }
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .card { border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-radius: 1.5rem; }
+        .ticker-wrapper {
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            height: 100px;
+            position: relative;
+        }
+        .ticker-item {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 0 0.5rem;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
             flex-direction: column;
         }
-        .header {
+        .ticker-item.active { opacity: 1; }
+        .table-mobile-card {
             background-color: #ffffff;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            padding: 1rem 1.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #92400E; /* Deep orange/brown, similar to original Banjara Bazaar logo */
-            font-family: 'Playfair Display', serif;
-            text-decoration: none;
-        }
-        .main-layout-container { /* New container for sidebar + main content */
-            display: flex;
-            flex-grow: 1; /* Allow it to grow and fill available space */
-        }
-        .sidebar {
-            width: 240px; /* Fixed width for the sidebar */
-            background-color: #ffffff;
-            box-shadow: 1px 0 3px 0 rgba(0, 0, 0, 0.05); /* Shadow on the right side */
-            padding-top: 1rem;
-            flex-shrink: 0; /* Prevent sidebar from shrinking */
-        }
-        .sidebar-nav-item {
-            display: flex;
-            align-items: center;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            color: #4B5563; /* Gray-600 for inactive items */
-            text-decoration: none;
-            transition: all 0.2s ease-in-out;
-            border-left: 4px solid transparent; /* For active state border */
-        }
-        .sidebar-nav-item:hover {
-            background-color: #F3F4F6; /* Light gray on hover */
-            color: #1F2937; /* Darker text on hover */
-        }
-        .sidebar-nav-item.active {
-            background-color: #FFFBEB; /* Light yellow background */
-            color: #D97706; /* Darker orange for active text */
-            font-weight: 700;
-            border-left-color: #FACC15; /* Yellow border for active item */
-        }
-        .sidebar-icon {
-            margin-right: 0.75rem;
-            font-size: 1.25rem;
-        }
-
-        .main-content {
-            flex-grow: 1; /* Allow main content to take remaining space */
-            padding: 2rem 1.5rem;
-            max-width: calc(100% - 240px); /* Adjust max-width for sidebar */
-        }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-        @media (min-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (min-width: 1024px) { /* Adjust for larger screens with 3 columns */
-            .dashboard-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        .card {
-            background-color: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-        }
-        .product-status-dot {
-            height: 0.75rem;
-            width: 0.75rem;
-            border-radius: 9999px;
-            display: inline-block;
-            margin-right: 0.5rem;
-        }
-        .status-active { background-color: #10B981; /* Green */ }
-        .status-paused { background-color: #F59E0B; /* Amber */ }
-        .status-draft { background-color: #9CA3AF; /* Gray */ }
-
-        /* Button Styles to match Screenshot */
-        .main-btn {
-            background-color: #FACC15; /* Yellow/Orange from screenshot */
-            color: #1F2937; /* Dark text for contrast on yellow button */
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            border: 1px solid #FACC15;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            white-space: nowrap;
-        }
-        .main-btn:hover {
-            background-color: #EAB308;
-            border-color: #EAB308;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .main-btn:disabled {
-            background-color: #D1D5DB;
-            border-color: #D1D5DB;
-            color: #9CA3AF;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .secondary-btn {
-            background-color: #E5E7EB; /* Light gray from screenshot */
-            color: #374151; /* Darker text */
-            font-weight: 600;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            border: 1px solid #D1D5DB;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            white-space: nowrap;
-        }
-        .secondary-btn:hover {
-            background-color: #D1D5DB;
-            border-color: #9CA3AF;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .table-mobile-card:last-child { margin-bottom: 0; }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-yellow-bg': '#fefce8',
+                        'brand-yellow-dark': '#ca8a04',
+                        'brand-yellow-light': '#fde68a',
+                        'brand-yellow-primary': '#facc15',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
-    <header class="header">
-        <div class="header-content">
-            <a href="#" class="logo">Banjara Bazaar</a>
-            <span class="font-semibold text-gray-700">Seller Dashboard</span>
+<body class="bg-gray-100">
+
+<div class="relative min-h-screen md:flex">
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/60 z-10 md:hidden" style="display: none;"></div>
+
+    <aside id="sidebar" class="bg-white text-gray-800 w-64 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 transition-transform duration-300 ease-in-out z-20">
+        <div class="p-6">
+            <h1 class="text-2xl font-bold text-brand-yellow-dark">Banjara Bazaar</h1>
+            <p class="text-xs text-gray-500">SELLER PLATFORM</p>
         </div>
-    </header>
+        <nav class="mt-6 flex-1">
+            <a href="#" class="sidebar-link active flex items-center py-3 px-6" data-section="dashboard"><i class="bi bi-speedometer2 text-lg"></i><span class="ml-4">Dashboard</span></a>
+            <a href="#" class="sidebar-link flex items-center py-3 px-6" data-section="products"><i class="bi bi-tag text-lg"></i><span class="ml-4">Products</span></a>
+            <a href="#" class="sidebar-link flex items-center py-3 px-6" data-section="orders"><i class="bi bi-box-seam text-lg"></i><span class="ml-4">Orders</span></a>
+            <a href="#" class="sidebar-link flex items-center py-3 px-6" data-section="payouts"><i class="bi bi-wallet2 text-lg"></i><span class="ml-4">Payouts</span></a>
+            <a href="#" class="sidebar-link flex items-center py-3 px-6" data-section="performance"><i class="bi bi-graph-up text-lg"></i><span class="ml-4">Performance</span></a>
+            <a href="#" class="sidebar-link flex items-center py-3 px-6" data-section="settings"><i class="bi bi-gear text-lg"></i><span class="ml-4">Settings</span></a>
+        </nav>
+    </aside>
 
-    <div class="main-layout-container">
-        <aside class="sidebar">
-            <nav>
-                <a href="#" class="sidebar-nav-item active">
-                    <span class="sidebar-icon">🏠</span> Dashboard
-                </a>
-                <a href="#" class="sidebar-nav-item">
-                    <span class="sidebar-icon">📦</span> Products
-                </a>
-                <a href="#" class="sidebar-nav-item">
-                    <span class="sidebar-icon">⬆️</span> Bulk Upload
-                </a>
-                <a href="#" class="sidebar-nav-item">
-                    <span class="sidebar-icon">📋</span> Orders
-                </a>
-                <a href="#" class="sidebar-nav-item">
-                    <span class="sidebar-icon">💳</span> Payments
-                </a>
-                <a href="#" class="sidebar-nav-item">
-                    <span class="sidebar-icon">📈</span> Performance
-                </a>
-                <a href="#" class="sidebar-nav-item">
-                    <span class="sidebar-icon">✉️</span> Messages
-                </a>
-                <a href="#" class="sidebar-nav-item">
-                    <span class="sidebar-icon">⚙️</span> Settings
-                </a>
-            </nav>
-        </aside>
-
-        <main class="main-content">
-            <h2 class="text-xl font-bold mb-6">Welcome, Manu!</h2>
-
-            <div class="dashboard-grid mb-8">
-                <a href="./listingwizard.html" class="card flex items-center p-6 bg-yellow-100 hover:bg-yellow-200 transition-colors">
-                    <span class="text-4xl mr-4">🚀</span>
-                    <div>
-                        <h3 class="font-bold text-lg">List a New Product</h3>
-                        <p class="text-sm text-gray-600">Use our 5-step wizard to add products easily.</p>
-                    </div>
-                </a>
-                <a href="#" class="card flex items-center p-6 hover:bg-gray-50 transition-colors">
-                    <span class="text-4xl mr-4">📊</span>
-                    <div>
-                        <h3 class="font-bold text-lg">View Analytics</h3>
-                        <p class="text-sm text-gray-600">Track your sales and performance.</p>
-                    </div>
-                </a>
-                <a href="#" class="card flex items-center p-6 hover:bg-gray-50 transition-colors">
-                    <span class="text-4xl mr-4">👤</span>
-                    <div>
-                        <h3 class="font-bold text-lg">Manage Profile</h3>
-                        <p class="text-sm text-gray-600">Update your account details.</p>
-                    </div>
-                </a>
+    <div class="flex-1 flex flex-col">
+        <header class="bg-white shadow-sm p-4 flex justify-between items-center">
+             <button id="menu-button" class="md:hidden text-gray-700">
+                <i class="bi bi-list text-2xl"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-gray-800" id="section-title">Dashboard</h2>
+            <div>
+                <button class="bg-brand-yellow-dark text-white font-semibold py-2 px-4 rounded-lg shadow hover:bg-yellow-700 transition text-sm">
+                    Add New Product
+                </button>
             </div>
+        </header>
 
-            <div class="card mt-8">
-                <h3 class="text-lg font-bold mb-4">My Products</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full" src="http://googleusercontent.com/file_content/27" alt="Product Image">
+        <main class="flex-1 p-4 md:p-8">
+            <div id="dashboard" class="content-section active">
+                <div class="ticker-wrapper relative mb-4">
+                    <div class="flex flex-col h-full justify-center items-center" id="community-ticker-content"></div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow"><h3 class="text-sm font-medium text-gray-500">Total Revenue</h3><p class="text-3xl font-bold text-green-600 mt-2">₹1,45,670</p></div>
+                    <div class="bg-white p-6 rounded-xl shadow"><h3 class="text-sm font-medium text-gray-500">New Orders</h3><p class="text-3xl font-bold text-blue-600 mt-2">12</p></div>
+                    <div class="bg-white p-6 rounded-xl shadow"><h3 class="text-sm font-medium text-gray-500">Pending Payout</h3><p class="text-3xl font-bold text-yellow-600 mt-2">₹22,500</p></div>
+                    <div class="bg-white p-6 rounded-xl shadow"><h3 class="text-sm font-medium text-gray-500">Products Live</h3><p class="text-3xl font-bold text-indigo-600 mt-2">84</p></div>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-7 gap-6 mt-6">
+                    <div class="lg:col-span-4">
+                        <div class="bg-white p-6 rounded-xl shadow h-full">
+                            <h5 class="text-xl font-bold text-gray-800 mb-4">Recent Orders</h5>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left hidden md:table">
+                                    <thead><tr class="text-xs text-gray-500 uppercase border-b"><th class="py-2 px-2">Order ID</th><th class="py-2 px-2">Customer</th><th class="py-2 px-2">Amount</th><th class="py-2 px-2">Status</th></tr></thead>
+                                    <tbody>
+                                        <tr class="border-b"><td class="py-3 px-2">#BB1024</td><td class="py-3 px-2">Priya Sharma</td><td class="py-3 px-2">₹1,499</td><td class="py-3 px-2"><span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Processing</span></td></tr>
+                                        <tr class="border-b"><td class="py-3 px-2">#BB1023</td><td class="py-3 px-2">Amit Singh</td><td class="py-3 px-2">₹899</td><td class="py-3 px-2"><span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Shipped</span></td></tr>
+                                        <tr class="border-b"><td class="py-3 px-2">#BB1022</td><td class="py-3 px-2">Rina Das</td><td class="py-3 px-2">₹2,150</td><td class="py-3 px-2"><span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Delivered</span></td></tr>
+                                        <tr class="border-b"><td class="py-3 px-2">#BB1021</td><td class="py-3 px-2">Suresh Gupta</td><td class="py-3 px-2">₹499</td><td class="py-3 px-2"><span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Cancelled</span></td></tr>
+                                    </tbody>
+                                </table>
+                                <div class="md:hidden space-y-3">
+                                    <div class="table-mobile-card">
+                                        <div class="flex justify-between items-center">
+                                            <div><h6 class="font-bold mb-0">Order #BB1024</h6><small class="text-gray-500">Priya Sharma</small></div>
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Processing</span>
                                         </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">Handcrafted Wooden Tray</div>
-                                            <div class="text-sm text-gray-500">Decor</div>
-                                        </div>
+                                        <div class="mt-2"><span class="font-bold">Amount:</span> ₹1,499</div>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹1,500</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">200</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="product-status-dot status-active"></span>
-                                    <span class="text-sm text-gray-900">Active</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="#" class="main-btn mr-2">Edit</a>
-                                    <a href="#" class="secondary-btn">Pause</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full" src="https://placehold.co/40x40/4CAF50/FFF?text=P2" alt="Product Image">
+                                    <div class="table-mobile-card">
+                                        <div class="flex justify-between items-center">
+                                            <div><h6 class="font-bold mb-0">Order #BB1023</h6><small class="text-gray-500">Amit Singh</small></div>
+                                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Shipped</span>
                                         </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">Ceramic Vase - Blue Motif</div>
-                                            <div class="text-sm text-gray-500">Home Decor</div>
-                                        </div>
+                                        <div class="mt-2"><span class="font-bold">Amount:</span> ₹899</div>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹800</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">50</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="product-status-dot status-paused"></span>
-                                    <span class="text-sm text-gray-900">Paused</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="#" class="main-btn mr-2">Edit</a>
-                                    <a href="#" class="main-btn">Resume</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full" src="https://placehold.co/40x40/9E9E9E/FFF?text=P3" alt="Product Image">
-                                        </div>
-                                        <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">Handloom Rug - Small</div>
-                                            <div class="text-sm text-gray-500">Furnishing</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">₹2,500</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="product-status-dot status-draft"></span>
-                                    <span class="text-sm text-gray-900">Draft</span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <a href="#" class="main-btn mr-2">Edit</a>
-                                    <a href="#" class="secondary-btn">Delete</a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-3">
+                        <div class="bg-white p-6 rounded-xl shadow h-full">
+                            <h5 class="text-xl font-bold text-gray-800 mb-4">Sales This Week</h5>
+                            <div class="flex justify-around items-end h-40">
+                                <div class="bg-blue-200 rounded-t-lg" style="width: 12%; height: 31%;" title="Mon: ₹5k"></div>
+                                <div class="bg-blue-200 rounded-t-lg" style="width: 12%; height: 52%;" title="Tue: ₹8k"></div>
+                                <div class="bg-blue-500 rounded-t-lg" style="width: 12%; height: 75%;" title="Wed: ₹12k"></div>
+                                <div class="bg-blue-200 rounded-t-lg" style="width: 12%; height: 44%;" title="Thu: ₹7k"></div>
+                                <div class="bg-blue-200 rounded-t-lg" style="width: 12%; height: 56%;" title="Fri: ₹9k"></div>
+                                <div class="bg-blue-500 rounded-t-lg" style="width: 12%; height: 94%;" title="Sat: ₹15k"></div>
+                                <div class="bg-blue-200 rounded-t-lg" style="width: 12%; height: 69%;" title="Sun: ₹11k"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div id="products" class="content-section">
+                <div class="bg-white p-6 rounded-xl shadow">
+                    <div class="overflow-x-auto hidden md:block">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="text-xs text-gray-500 uppercase border-b">
+                                    <th class="py-2 px-2 w-2/5">Product Name</th>
+                                    <th class="py-2 px-2">Stock</th>
+                                    <th class="py-2 px-2">Price</th>
+                                    <th class="py-2 px-2">Status</th>
+                                    <th class="py-2 px-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="py-3 px-2"><div class="flex items-center"><img src="https://i.imgur.com/Uf24T4N.png" class="rounded-lg mr-3 w-12 h-12 object-cover"><div class="font-bold">Hand-Carved Elephant</div></div></td>
+                                    <td class="py-3 px-2"><span class="font-bold">84</span></td>
+                                    <td class="py-3 px-2">₹1,499</td>
+                                    <td class="py-3 px-2"><span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Live</span></td>
+                                    <td class="py-3 px-2"><button class="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-lg hover:bg-gray-300">Edit</button></td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-3 px-2"><div class="flex items-center"><img src="https://i.imgur.com/uTyA1u3.png" class="rounded-lg mr-3 w-12 h-12 object-cover"><div class="font-bold">Blue Pottery Vase</div></div></td>
+                                    <td class="py-3 px-2"><span class="font-bold">120</span></td>
+                                    <td class="py-3 px-2">₹899</td>
+                                    <td class="py-3 px-2"><span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Live</span></td>
+                                    <td class="py-3 px-2"><button class="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-lg hover:bg-gray-300">Edit</button></td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-3 px-2"><div class="flex items-center"><img src="https://i.imgur.com/w9zL7H8.png" class="rounded-lg mr-3 w-12 h-12 object-cover"><div class="font-bold">Jaipuri Leather Shoes</div></div></td>
+                                    <td class="py-3 px-2"><span class="font-bold text-red-500">0</span></td>
+                                    <td class="py-3 px-2">₹2,150</td>
+                                    <td class="py-3 px-2"><span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Out of Stock</span></td>
+                                    <td class="py-3 px-2"><button class="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-lg hover:bg-gray-300">Edit</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="md:hidden space-y-3">
+                         <p class="text-gray-500 text-center mb-4">Dummy products listed below.</p>
+                         <div class="table-mobile-card">
+                            <div class="flex items-center mb-2">
+                                <img src="https://i.imgur.com/Uf24T4N.png" class="rounded-lg mr-3 w-12 h-12 object-cover">
+                                <div><h6 class="font-bold mb-0">Hand-Carved Elephant</h6><span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Live</span></div>
+                            </div>
+                            <div class="flex justify-between mt-2"><span class="text-sm text-gray-500">Stock:</span><span class="font-bold">84</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-gray-500">Price:</span><span class="font-bold">₹1,499</span></div>
+                            <button class="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-lg hover:bg-gray-300 w-full mt-2">Edit</button>
+                         </div>
+                         <div class="table-mobile-card">
+                            <div class="flex items-center mb-2">
+                                <img src="https://i.imgur.com/uTyA1u3.png" class="rounded-lg mr-3 w-12 h-12 object-cover">
+                                <div><h6 class="font-bold mb-0">Blue Pottery Vase</h6><span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Live</span></div>
+                            </div>
+                            <div class="flex justify-between mt-2"><span class="text-sm text-gray-500">Stock:</span><span class="font-bold">120</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-gray-500">Price:</span><span class="font-bold">₹899</span></div>
+                            <button class="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-lg hover:bg-gray-300 w-full mt-2">Edit</button>
+                         </div>
+                         <div class="table-mobile-card">
+                            <div class="flex items-center mb-2">
+                                <img src="https://i.imgur.com/w9zL7H8.png" class="rounded-lg mr-3 w-12 h-12 object-cover">
+                                <div><h6 class="font-bold mb-0">Jaipuri Leather Shoes</h6><span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Out of Stock</span></div>
+                            </div>
+                            <div class="flex justify-between mt-2"><span class="text-sm text-gray-500">Stock:</span><span class="font-bold text-red-500">0</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-gray-500">Price:</span><span class="font-bold">₹2,150</span></div>
+                            <button class="bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-lg hover:bg-gray-300 w-full mt-2">Edit</button>
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="orders" class="content-section">
+                <div class="bg-white p-6 rounded-xl shadow"><div class="card-body"><p class="text-gray-500">Yeh ek dummy section hai. Asli orders aane par yahan dikhenge.</p></div></div>
+            </div>
+
+            <div id="payouts" class="content-section">
+                <div class="bg-white p-6 rounded-xl shadow"><div class="card-body"><p class="text-gray-500">Yeh ek dummy section hai. Aapki payments ki history yahan dikhegi.</p></div></div>
+            </div>
+
+            <div id="performance" class="content-section">
+                <div class="bg-white p-6 rounded-xl shadow"><div class="card-body"><p class="text-gray-500">Yeh ek dummy section hai. Aapki sales aur store performance ke analytics yahan dikhenge.</p></div></div>
+            </div>
+
+            <div id="settings" class="content-section">
+                <div class="bg-white p-6 rounded-xl shadow"><div class="card-body"><p class="text-gray-500">Yeh ek dummy section hai. Yahan aap apni profile, bank details, aur store policies badal sakte hain.</p></div></div>
+            </div>
+
         </main>
     </div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const menuButton = document.getElementById('menu-button');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const contentSections = document.querySelectorAll('.content-section');
+            const sectionTitle = document.getElementById('section-title');
+
+            const toggleSidebar = () => {
+                sidebar.classList.toggle('-translate-x-full');
+                mobileOverlay.style.display = sidebar.classList.contains('-translate-x-full') ? 'none' : 'block';
+            };
+
+            menuButton.addEventListener('click', toggleSidebar);
+            mobileOverlay.addEventListener('click', toggleSidebar);
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    if (window.innerWidth < 768) { // On mobile, close sidebar after click
+                        toggleSidebar();
+                    }
+
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+
+                    const sectionId = link.getAttribute('data-section');
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === sectionId) {
+                            section.classList.add('active');
+                            sectionTitle.textContent = link.textContent.trim();
+                        }
+                    });
+                });
+            });
+
+            const missions = [
+                { text: "Mission: 1 naya product list karo aur 50 bonus points jeeto!", icon: "🎯" },
+                { text: "Tip: Apni brand story update karo! Customer connect badhega.", icon: "💡" },
+                { text: "News: Pichle 1 ghante mein ₹50,000+ ki sales hui!", icon: "🔥" }
+            ];
+
+            const communityTickerContent = document.getElementById('community-ticker-content');
+            let currentTickerItem = 0;
+
+            const updateTicker = () => {
+                if (communityTickerContent) {
+                    communityTickerContent.innerHTML = '';
+                    const item = missions[currentTickerItem];
+                    const div = document.createElement('div');
+                    div.className = 'ticker-item active flex items-center justify-center';
+                    div.innerHTML = `<div class="flex flex-col items-center justify-center text-center p-2"><span class="mr-2 text-2xl">${item.icon}</span><p class="mb-0 font-bold">${item.text.split(':')[0].trim()}:</p><p class="mb-0 text-sm">${item.text.split(':')[1].trim()}</p></div>`;
+                    communityTickerContent.appendChild(div);
+                    
+                    currentTickerItem = (currentTickerItem + 1) % missions.length;
+                }
+            };
+
+            if(communityTickerContent) {
+                updateTicker();
+                setInterval(updateTicker, 4000);
+            }
+        });
+    </script>
+
 </body>
 </html>
